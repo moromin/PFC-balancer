@@ -8,6 +8,7 @@ import (
 
 type Querier interface {
 	ListUsers(ctx context.Context) ([]User, error)
+	Store(ctx context.Context, arg StoreParams) (int64, error)
 }
 
 var _ Querier = (*Queries)(nil)

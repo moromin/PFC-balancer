@@ -8,7 +8,7 @@ import (
 )
 
 const listUsers = `-- name: ListUsers :many
-SELECT user_id, full_name, email, hashed_password, created_at, updated_at FROM users
+SELECT user_id, nick_name, email, hashed_password, created_at, updated_at FROM users
 ORDER BY id
 `
 
@@ -23,7 +23,7 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 		var i User
 		if err := rows.Scan(
 			&i.UserID,
-			&i.FullName,
+			&i.NickName,
 			&i.Email,
 			&i.HashedPassword,
 			&i.CreatedAt,
@@ -40,4 +40,27 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const store = `-- name: Store :one
+INSERT INTO users (
+    nick_name,
+    email,
+    hashed_password
+) VALUES (
+    $1, $2, $3
+) RETURNING user_id
+`
+
+type StoreParams struct {
+	NickName       string `json:"nick_name"`
+	Email          string `json:"email"`
+	HashedPassword string `json:"hashed_password"`
+}
+
+func (q *Queries) Store(ctx context.Context, arg StoreParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, store, arg.NickName, arg.Email, arg.HashedPassword)
+	var user_id int64
+	err := row.Scan(&user_id)
+	return user_id, err
 }

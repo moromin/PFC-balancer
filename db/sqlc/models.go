@@ -32,7 +32,7 @@ type RecipeMenu struct {
 
 type User struct {
 	UserID         int64     `json:"user_id"`
-	FullName       string    `json:"full_name"`
+	NickName       string    `json:"nick_name"`
 	Email          string    `json:"email"`
 	HashedPassword string    `json:"hashed_password"`
 	CreatedAt      time.Time `json:"created_at"`
