@@ -49,7 +49,7 @@ INSERT INTO users (
     hashed_password
 ) VALUES (
     $1, $2, $3
-) RETURNING user_id
+) RETURNING user_id, nick_name, email, hashed_password, created_at, updated_at
 `
 
 type StoreParams struct {
@@ -58,9 +58,16 @@ type StoreParams struct {
 	HashedPassword string `json:"hashed_password"`
 }
 
-func (q *Queries) Store(ctx context.Context, arg StoreParams) (int64, error) {
+func (q *Queries) Store(ctx context.Context, arg StoreParams) (User, error) {
 	row := q.db.QueryRowContext(ctx, store, arg.NickName, arg.Email, arg.HashedPassword)
-	var user_id int64
-	err := row.Scan(&user_id)
-	return user_id, err
+	var i User
+	err := row.Scan(
+		&i.UserID,
+		&i.NickName,
+		&i.Email,
+		&i.HashedPassword,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
