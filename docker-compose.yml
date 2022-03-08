@@ -7,8 +7,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: balance-app
-    volumes:
-      - ./db/sql:/docker-entrypoint-initdb.d
+    # volumes:
+    #   - ./db/migration/01_init_schema.up.sql:/docker-entrypoint-initdb.d
     ports:
       - 5432:5432
 
@@ -31,4 +31,3 @@ services:
       - 8000:8000
     depends_on:
       - db
-
