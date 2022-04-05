@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"github.com/moromin/PFC-balancer/services/food/db"
@@ -62,6 +63,8 @@ FROM food
 WHERE name = $1;
 `
 
+var errNotFound = errors.New("data is not found")
+
 func (s *Server) FindOne(ctx context.Context, req *proto.FindOneRequest) (*proto.FindOneResponse, error) {
 	var food models.Food
 
@@ -69,7 +72,7 @@ func (s *Server) FindOne(ctx context.Context, req *proto.FindOneRequest) (*proto
 		return &proto.FindOneResponse{
 			Status: http.StatusNotFound,
 			Error:  err.Error(),
-		}, nil
+		}, errNotFound
 	}
 
 	data := &proto.FindOneData{
