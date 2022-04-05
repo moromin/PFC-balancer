@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"errors"
 	"net/http"
 
 	"github.com/moromin/PFC-balancer/services/food/db"
@@ -32,7 +31,7 @@ func (s *Server) CreateFood(ctx context.Context, req *proto.CreateFoodRequest) (
 		return &proto.CreateFoodResponse{
 			Status: http.StatusInternalServerError,
 			Error:  err.Error(),
-		}, nil
+		}, err
 	}
 
 	res, err := ins.ExecContext(ctx, req.Name, req.Protein, req.Fat, req.Carbohydrate, req.Category)
@@ -40,7 +39,7 @@ func (s *Server) CreateFood(ctx context.Context, req *proto.CreateFoodRequest) (
 		return &proto.CreateFoodResponse{
 			Status: http.StatusConflict,
 			Error:  err.Error(),
-		}, nil
+		}, err
 	}
 
 	id, err := res.LastInsertId()
@@ -48,7 +47,7 @@ func (s *Server) CreateFood(ctx context.Context, req *proto.CreateFoodRequest) (
 		return &proto.CreateFoodResponse{
 			Status: http.StatusConflict,
 			Error:  err.Error(),
-		}, nil
+		}, err
 	}
 
 	return &proto.CreateFoodResponse{
@@ -63,8 +62,6 @@ FROM food
 WHERE name = $1;
 `
 
-var errNotFound = errors.New("data is not found")
-
 func (s *Server) FindOne(ctx context.Context, req *proto.FindOneRequest) (*proto.FindOneResponse, error) {
 	var food models.Food
 
@@ -72,7 +69,7 @@ func (s *Server) FindOne(ctx context.Context, req *proto.FindOneRequest) (*proto
 		return &proto.FindOneResponse{
 			Status: http.StatusNotFound,
 			Error:  err.Error(),
-		}, errNotFound
+		}, err
 	}
 
 	data := &proto.FindOneData{
@@ -87,5 +84,55 @@ func (s *Server) FindOne(ctx context.Context, req *proto.FindOneRequest) (*proto
 	return &proto.FindOneResponse{
 		Status: http.StatusOK,
 		Data:   data,
+	}, nil
+}
+
+const listFood = `
+	SELECT *
+	FROM food
+	ORDER BY id ASC;
+`
+
+func (s *Server) ListFood(ctx context.Context, req *proto.ListFoodRequest) (*proto.ListFoodResponse, error) {
+	var foodList []*proto.FindOneData
+
+	rows, err := s.H.DB.QueryContext(ctx, listFood)
+	if err != nil {
+		return &proto.ListFoodResponse{
+			Status: http.StatusInternalServerError,
+		}, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var food models.Food
+
+		if err := rows.Scan(&food); err != nil {
+			return &proto.ListFoodResponse{
+				Status: http.StatusInternalServerError,
+			}, err
+		}
+
+		data := &proto.FindOneData{
+			Id:           food.Id,
+			Name:         food.Name,
+			Protein:      food.Protein,
+			Fat:          food.Fat,
+			Carbohydrate: food.Carbohydrate,
+			Category:     food.Category,
+		}
+
+		foodList = append(foodList, data)
+	}
+
+	if err := rows.Err(); err != nil {
+		return &proto.ListFoodResponse{
+			Status: http.StatusInternalServerError,
+		}, err
+	}
+
+	return &proto.ListFoodResponse{
+		Status:   http.StatusOK,
+		FoodList: foodList,
 	}, nil
 }
