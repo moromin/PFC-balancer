@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type FoodServiceClient interface {
 	FindOne(ctx context.Context, in *FindOneRequest, opts ...grpc.CallOption) (*FindOneResponse, error)
 	CreateFood(ctx context.Context, in *CreateFoodRequest, opts ...grpc.CallOption) (*CreateFoodResponse, error)
+	ListFood(ctx context.Context, in *ListFoodRequest, opts ...grpc.CallOption) (*ListFoodResponse, error)
 }
 
 type foodServiceClient struct {
@@ -48,12 +49,22 @@ func (c *foodServiceClient) CreateFood(ctx context.Context, in *CreateFoodReques
 	return out, nil
 }
 
+func (c *foodServiceClient) ListFood(ctx context.Context, in *ListFoodRequest, opts ...grpc.CallOption) (*ListFoodResponse, error) {
+	out := new(ListFoodResponse)
+	err := c.cc.Invoke(ctx, "/food.FoodService/ListFood", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FoodServiceServer is the server API for FoodService service.
 // All implementations should embed UnimplementedFoodServiceServer
 // for forward compatibility
 type FoodServiceServer interface {
 	FindOne(context.Context, *FindOneRequest) (*FindOneResponse, error)
 	CreateFood(context.Context, *CreateFoodRequest) (*CreateFoodResponse, error)
+	ListFood(context.Context, *ListFoodRequest) (*ListFoodResponse, error)
 }
 
 // UnimplementedFoodServiceServer should be embedded to have forward compatible implementations.
@@ -65,6 +76,9 @@ func (UnimplementedFoodServiceServer) FindOne(context.Context, *FindOneRequest) 
 }
 func (UnimplementedFoodServiceServer) CreateFood(context.Context, *CreateFoodRequest) (*CreateFoodResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateFood not implemented")
+}
+func (UnimplementedFoodServiceServer) ListFood(context.Context, *ListFoodRequest) (*ListFoodResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListFood not implemented")
 }
 
 // UnsafeFoodServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -114,6 +128,24 @@ func _FoodService_CreateFood_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FoodService_ListFood_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListFoodRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FoodServiceServer).ListFood(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/food.FoodService/ListFood",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FoodServiceServer).ListFood(ctx, req.(*ListFoodRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FoodService_ServiceDesc is the grpc.ServiceDesc for FoodService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -128,6 +160,10 @@ var FoodService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateFood",
 			Handler:    _FoodService_CreateFood_Handler,
+		},
+		{
+			MethodName: "ListFood",
+			Handler:    _FoodService_ListFood_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
