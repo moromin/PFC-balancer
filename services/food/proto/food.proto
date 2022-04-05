@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package food;
+
+option go_package = "./proto";
+
+service FoodService {
+    rpc FindOne(FindOneRequest) returns (FindOneResponse) {}
+    rpc CreateFood(CreateFoodRequest) returns (CreateFoodResponse) {}
+}
+
+// FindOne
+message FindOneData {
+    int64 id = 1;
+    string name = 2;
+    double protein = 3;
+    double fat = 4;
+    double carbohydrate = 5;
+    int64 category = 6;
+}
+
+message FindOneRequest {
+    string name = 1;
+}
+
+message FindOneResponse {
+    int64 status = 1;
+    string error = 2;
+    FindOneData data = 3;
+}
+
+// CreateFood
+message CreateFoodRequest {
+    string name = 1;
+    double protein = 2;
+    double fat = 3;
+    double carbohydrate = 4;
+    int64 category = 5;
+}
+
+message CreateFoodResponse {
+    int64 status = 1;
+    string error = 2;
+    int64 id = 3;
+}

@@ -4,3 +4,4 @@
 # VSCode
 *.code-workspace
 thunder-tests
+.DS_Store
