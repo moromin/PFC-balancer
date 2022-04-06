@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/moromin/PFC-balancer/apierror"
 	"github.com/moromin/PFC-balancer/services/food/proto"
 )
 
@@ -41,7 +42,7 @@ func CreateFood(ctx *gin.Context, c proto.FoodServiceClient) {
 	})
 
 	if err != nil {
-		ctx.AbortWithError(int(res.Status), err)
+		apierror.AbortWithError(ctx, err)
 		return
 	}
 
