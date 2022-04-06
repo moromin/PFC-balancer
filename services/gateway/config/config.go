@@ -8,6 +8,7 @@ import (
 
 type Config struct {
 	Port       string
+	AuthSvcUrl string
 	FoodSvcUrl string
 }
 
@@ -19,6 +20,7 @@ func LoadConfig() (config Config, err error) {
 
 	config = Config{
 		Port:       os.Getenv("PORT"),
+		AuthSvcUrl: os.Getenv("AUTH_SVC_URL"),
 		FoodSvcUrl: os.Getenv("FOOD_SVC_URL"),
 	}
 

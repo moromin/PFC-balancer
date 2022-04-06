@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/moromin/PFC-balancer/services/gateway/config"
+	"github.com/moromin/PFC-balancer/services/gateway/pkg/auth"
 	"github.com/moromin/PFC-balancer/services/gateway/pkg/food"
 )
 
@@ -16,7 +17,8 @@ func main() {
 
 	r := gin.Default()
 
-	food.RegisterRoutes(r, &c)
+	authSvc := *auth.RegisterRoutes(r, &c)
+	food.RegisterRoutes(r, &c, &authSvc)
 
 	r.Run(c.Port)
 }
