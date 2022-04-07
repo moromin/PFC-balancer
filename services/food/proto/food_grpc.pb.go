@@ -19,8 +19,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FoodServiceClient interface {
 	FindOne(ctx context.Context, in *FindOneRequest, opts ...grpc.CallOption) (*FindOneResponse, error)
-	CreateFood(ctx context.Context, in *CreateFoodRequest, opts ...grpc.CallOption) (*CreateFoodResponse, error)
-	ListFood(ctx context.Context, in *ListFoodRequest, opts ...grpc.CallOption) (*ListFoodResponse, error)
+	ListFoods(ctx context.Context, in *ListFoodsRequest, opts ...grpc.CallOption) (*ListFoodsResponse, error)
+	SearchFoods(ctx context.Context, in *SearchFoodsRequest, opts ...grpc.CallOption) (*SearchFoodsResponse, error)
 }
 
 type foodServiceClient struct {
@@ -40,18 +40,18 @@ func (c *foodServiceClient) FindOne(ctx context.Context, in *FindOneRequest, opt
 	return out, nil
 }
 
-func (c *foodServiceClient) CreateFood(ctx context.Context, in *CreateFoodRequest, opts ...grpc.CallOption) (*CreateFoodResponse, error) {
-	out := new(CreateFoodResponse)
-	err := c.cc.Invoke(ctx, "/food.FoodService/CreateFood", in, out, opts...)
+func (c *foodServiceClient) ListFoods(ctx context.Context, in *ListFoodsRequest, opts ...grpc.CallOption) (*ListFoodsResponse, error) {
+	out := new(ListFoodsResponse)
+	err := c.cc.Invoke(ctx, "/food.FoodService/ListFoods", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *foodServiceClient) ListFood(ctx context.Context, in *ListFoodRequest, opts ...grpc.CallOption) (*ListFoodResponse, error) {
-	out := new(ListFoodResponse)
-	err := c.cc.Invoke(ctx, "/food.FoodService/ListFood", in, out, opts...)
+func (c *foodServiceClient) SearchFoods(ctx context.Context, in *SearchFoodsRequest, opts ...grpc.CallOption) (*SearchFoodsResponse, error) {
+	out := new(SearchFoodsResponse)
+	err := c.cc.Invoke(ctx, "/food.FoodService/SearchFoods", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -63,8 +63,8 @@ func (c *foodServiceClient) ListFood(ctx context.Context, in *ListFoodRequest, o
 // for forward compatibility
 type FoodServiceServer interface {
 	FindOne(context.Context, *FindOneRequest) (*FindOneResponse, error)
-	CreateFood(context.Context, *CreateFoodRequest) (*CreateFoodResponse, error)
-	ListFood(context.Context, *ListFoodRequest) (*ListFoodResponse, error)
+	ListFoods(context.Context, *ListFoodsRequest) (*ListFoodsResponse, error)
+	SearchFoods(context.Context, *SearchFoodsRequest) (*SearchFoodsResponse, error)
 }
 
 // UnimplementedFoodServiceServer should be embedded to have forward compatible implementations.
@@ -74,11 +74,11 @@ type UnimplementedFoodServiceServer struct {
 func (UnimplementedFoodServiceServer) FindOne(context.Context, *FindOneRequest) (*FindOneResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindOne not implemented")
 }
-func (UnimplementedFoodServiceServer) CreateFood(context.Context, *CreateFoodRequest) (*CreateFoodResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateFood not implemented")
+func (UnimplementedFoodServiceServer) ListFoods(context.Context, *ListFoodsRequest) (*ListFoodsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListFoods not implemented")
 }
-func (UnimplementedFoodServiceServer) ListFood(context.Context, *ListFoodRequest) (*ListFoodResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListFood not implemented")
+func (UnimplementedFoodServiceServer) SearchFoods(context.Context, *SearchFoodsRequest) (*SearchFoodsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchFoods not implemented")
 }
 
 // UnsafeFoodServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -110,38 +110,38 @@ func _FoodService_FindOne_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _FoodService_CreateFood_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateFoodRequest)
+func _FoodService_ListFoods_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListFoodsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FoodServiceServer).CreateFood(ctx, in)
+		return srv.(FoodServiceServer).ListFoods(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/food.FoodService/CreateFood",
+		FullMethod: "/food.FoodService/ListFoods",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FoodServiceServer).CreateFood(ctx, req.(*CreateFoodRequest))
+		return srv.(FoodServiceServer).ListFoods(ctx, req.(*ListFoodsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _FoodService_ListFood_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListFoodRequest)
+func _FoodService_SearchFoods_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchFoodsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FoodServiceServer).ListFood(ctx, in)
+		return srv.(FoodServiceServer).SearchFoods(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/food.FoodService/ListFood",
+		FullMethod: "/food.FoodService/SearchFoods",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FoodServiceServer).ListFood(ctx, req.(*ListFoodRequest))
+		return srv.(FoodServiceServer).SearchFoods(ctx, req.(*SearchFoodsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -158,12 +158,12 @@ var FoodService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _FoodService_FindOne_Handler,
 		},
 		{
-			MethodName: "CreateFood",
-			Handler:    _FoodService_CreateFood_Handler,
+			MethodName: "ListFoods",
+			Handler:    _FoodService_ListFoods_Handler,
 		},
 		{
-			MethodName: "ListFood",
-			Handler:    _FoodService_ListFood_Handler,
+			MethodName: "SearchFoods",
+			Handler:    _FoodService_SearchFoods_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

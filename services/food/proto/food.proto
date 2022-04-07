@@ -6,12 +6,12 @@ option go_package = "./proto";
 
 service FoodService {
     rpc FindOne(FindOneRequest) returns (FindOneResponse) {}
-    rpc CreateFood(CreateFoodRequest) returns (CreateFoodResponse) {}
-    rpc ListFood(ListFoodRequest) returns (ListFoodResponse) {}
+    rpc ListFoods(ListFoodsRequest) returns (ListFoodsResponse) {}
+    rpc SearchFoods(SearchFoodsRequest) returns (SearchFoodsResponse) {}
 }
 
 // FindOne
-message FindOneData {
+message FoodData {
     int64 id = 1;
     string name = 2;
     double protein = 3;
@@ -26,30 +26,23 @@ message FindOneRequest {
 
 message FindOneResponse {
     int64 status = 1;
-    string error = 2;
-    FindOneData data = 3;
+    FoodData data = 2;
 }
 
-// CreateFood
-message CreateFoodRequest {
+// ListFoods
+message ListFoodsRequest {}
+
+message ListFoodsResponse {
+    int64 status = 1;
+    repeated FoodData food_list = 2;
+}
+
+// SearchFoods
+message SearchFoodsRequest {
     string name = 1;
-    double protein = 2;
-    double fat = 3;
-    double carbohydrate = 4;
-    int64 category = 5;
 }
 
-message CreateFoodResponse {
+message SearchFoodsResponse {
     int64 status = 1;
-    string error = 2;
-    int64 id = 3;
-}
-
-// ListFood
-message ListFoodRequest {}
-
-message ListFoodResponse {
-    int64 status = 1;
-    string error = 2;
-    repeated FindOneData food_list = 3;
+    repeated FoodData food_list = 2;
 }
