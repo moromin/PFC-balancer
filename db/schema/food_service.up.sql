@@ -6,9 +6,3 @@ CREATE TABLE food (
   "carbohydrate" real NOT NULL,
   "category" integer NOT NULL
 );
-
-CREATE TABLE users (
-  "id" bigserial PRIMARY KEY,
-  "email" varchar UNIQUE NOT NULL,
-  "password" varchar NOT NULL
-);
