@@ -8,8 +8,8 @@ import (
 	"github.com/moromin/PFC-balancer/services/food/proto"
 )
 
-func ListFood(ctx *gin.Context, c proto.FoodServiceClient) {
-	res, err := c.ListFood(context.Background(), &proto.ListFoodRequest{})
+func ListFoods(ctx *gin.Context, c proto.FoodServiceClient) {
+	res, err := c.ListFoods(context.Background(), &proto.ListFoodsRequest{})
 
 	if err != nil {
 		apierror.AbortWithError(ctx, err)
