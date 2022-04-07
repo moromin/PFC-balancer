@@ -15,7 +15,7 @@ type Server struct {
 }
 
 const createFood = `
-INSERT INTO food (
+INSERT INTO foods (
 	name,
 	protein,
 	fat,
@@ -44,7 +44,7 @@ func (s *Server) CreateFood(ctx context.Context, req *proto.CreateFoodRequest) (
 
 const findOne = `
 SELECT *
-FROM food
+FROM foods
 WHERE name = $1
 `
 
@@ -72,7 +72,7 @@ func (s *Server) FindOne(ctx context.Context, req *proto.FindOneRequest) (*proto
 
 const listFood = `
 	SELECT *
-	FROM food
+	FROM foods
 	ORDER BY id ASC;
 `
 

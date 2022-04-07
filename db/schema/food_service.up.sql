@@ -1,4 +1,4 @@
-CREATE TABLE food (
+CREATE TABLE foods (
   "id" bigserial PRIMARY KEY,
   "name" varchar UNIQUE NOT NULL,
   "protein" real NOT NULL,
