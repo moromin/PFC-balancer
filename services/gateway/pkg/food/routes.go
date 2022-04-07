@@ -16,19 +16,19 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 
 	route := r.Group("/food")
 	route.Use(a.AuthRequired)
-	route.POST("/", svc.CreateFood)
-	route.GET("/", svc.ListFood)
+	route.GET("/", svc.ListFoods)
 	route.GET("/:name", svc.FindOne)
-}
-
-func (svc *ServiceClient) CreateFood(ctx *gin.Context) {
-	routes.CreateFood(ctx, svc.Client)
+	route.GET("/search/:name", svc.SearchFoods)
 }
 
 func (svc *ServiceClient) FindOne(ctx *gin.Context) {
 	routes.FindOne(ctx, svc.Client)
 }
 
-func (svc *ServiceClient) ListFood(ctx *gin.Context) {
-	routes.ListFood(ctx, svc.Client)
+func (svc *ServiceClient) ListFoods(ctx *gin.Context) {
+	routes.ListFoods(ctx, svc.Client)
+}
+
+func (svc *ServiceClient) SearchFoods(ctx *gin.Context) {
+	routes.SearchFoods(ctx, svc.Client)
 }
