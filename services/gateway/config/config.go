@@ -7,9 +7,10 @@ import (
 )
 
 type Config struct {
-	Port       string
-	AuthSvcUrl string
-	FoodSvcUrl string
+	Port         string
+	AuthSvcUrl   string
+	FoodSvcUrl   string
+	RecipeSvcUrl string
 }
 
 func LoadConfig() (config Config, err error) {
