@@ -1,5 +1,5 @@
 # setting files
-*.env
+dev.env
 
 # VSCode
 *.code-workspace
