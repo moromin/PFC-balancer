@@ -19,8 +19,10 @@ func ReadRecipe(ctx *gin.Context, c proto.RecipeServiceClient) {
 		return
 	}
 
+	userId, _ := ctx.Get("userId")
 	res, err := c.ReadRecipe(context.Background(), &proto.ReadRecipeRequest{
-		Id: int64(id),
+		Id:     int64(id),
+		UserId: userId.(int64),
 	})
 
 	if err != nil {

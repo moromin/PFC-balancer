@@ -20,9 +20,10 @@ func LoadConfig() (config Config, err error) {
 	}
 
 	config = Config{
-		Port:       os.Getenv("PORT"),
-		AuthSvcUrl: os.Getenv("AUTH_SVC_URL"),
-		FoodSvcUrl: os.Getenv("FOOD_SVC_URL"),
+		Port:         os.Getenv("PORT"),
+		AuthSvcUrl:   os.Getenv("AUTH_SVC_URL"),
+		FoodSvcUrl:   os.Getenv("FOOD_SVC_URL"),
+		RecipeSvcUrl: os.Getenv("RECIPE_SVC_URL"),
 	}
 
 	return

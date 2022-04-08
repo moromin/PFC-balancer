@@ -12,7 +12,7 @@ import (
 func CreateRecipe(ctx *gin.Context, c proto.RecipeServiceClient) {
 	req := proto.CreateRecipeRequest{}
 
-	if err := ctx.BindJSON(req.Data); err != nil {
+	if err := ctx.BindJSON(&req.Data); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
