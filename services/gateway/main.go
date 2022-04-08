@@ -7,6 +7,7 @@ import (
 	"github.com/moromin/PFC-balancer/services/gateway/config"
 	"github.com/moromin/PFC-balancer/services/gateway/pkg/auth"
 	"github.com/moromin/PFC-balancer/services/gateway/pkg/food"
+	"github.com/moromin/PFC-balancer/services/gateway/pkg/recipe"
 )
 
 func main() {
@@ -19,6 +20,7 @@ func main() {
 
 	authSvc := *auth.RegisterRoutes(r, &c)
 	food.RegisterRoutes(r, &c, &authSvc)
+	recipe.RegisterRoutes(r, &c, &authSvc)
 
 	r.Run(c.Port)
 }

@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"log"
 	"net/http"
 
 	"github.com/moromin/PFC-balancer/services/food/db"
@@ -98,7 +97,6 @@ func (s *Server) SearchFoods(ctx context.Context, req *proto.SearchFoodsRequest)
 
 	rows, err := s.H.DB.QueryContext(ctx, searchFoods, "%"+req.Name+"%")
 	if err != nil {
-		log.Println(err)
 		return nil, status.Error(codes.Internal, "failed to query")
 	}
 	defer rows.Close()
