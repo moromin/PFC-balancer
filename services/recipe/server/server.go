@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 
-	"github.com/moromin/PFC-balancer/services/food/db"
+	"github.com/moromin/PFC-balancer/services/recipe/db"
 	"github.com/moromin/PFC-balancer/services/recipe/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
