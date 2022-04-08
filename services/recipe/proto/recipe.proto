@@ -4,7 +4,7 @@ package food;
 
 option go_package = "./proto";
 
-service FoodService {
+service RecipeService {
     rpc CreateRecipe(CreateRecipeRequest) returns (CreateRecipeResponse) {}
     rpc ReadRecipe(ReadRecipeRequest) returns (ReadRecipeResponse) {}
     // rpc UpdateRecipe(UpdateRecipeRequest) returns (UpdateReciperesponse) {}
