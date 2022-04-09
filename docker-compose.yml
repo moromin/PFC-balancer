@@ -15,7 +15,7 @@ services:
       # - ./platform/db/conf.d:/etc/postgres/conf.d
 
   migrate:
-    build: ./platform/db
+    build: ./platform/db/migrations
     depends_on:
       - db
     command: [ "up" ]
@@ -28,7 +28,7 @@ services:
       POSTGRES_PORT: 5432
       POSTGRES_DB: pfc-balancer
     volumes:
-      - ./platform/db/migrations:/migrations
+      - ./platform/db/migrations/migrations:/migrations
 
 volumes:
   db_volume:
