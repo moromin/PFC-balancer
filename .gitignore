@@ -1,6 +1,7 @@
 # setting files
-*.env
+dev.env
 
 # VSCode
 *.code-workspace
 thunder-tests
+.DS_Store
