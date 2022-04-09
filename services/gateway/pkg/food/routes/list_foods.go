@@ -2,6 +2,7 @@ package routes
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/moromin/PFC-balancer/apierror"
@@ -16,5 +17,5 @@ func ListFoods(ctx *gin.Context, c proto.FoodServiceClient) {
 		return
 	}
 
-	ctx.JSON(int(res.Status), &res)
+	ctx.JSON(http.StatusOK, &res)
 }
