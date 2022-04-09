@@ -3,8 +3,12 @@ PROTOC_GRPC = protoc  --go_out=. \
 			proto/*.proto
 
 SERVICE = user
+RUN_PATH = platform/db/db
 
 protoc:
 	cd services/${SERVICE} && $(PROTOC_GRPC)
+
+run:
+	cd ${RUN_PATH} && go run main.go
 
 .PHONY:
