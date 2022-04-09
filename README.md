@@ -4,7 +4,7 @@
 graph LR;
     A(gateway) --> B(auth)
     A(gateway) --> C(recipe)
-    B --> D(users)
+    B --> D(user)
     C --> D
     C --> E(food)
 ```
