@@ -17,7 +17,7 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 	route := r.Group("/food")
 	route.Use(a.AuthRequired)
 	route.GET("/", svc.ListFoods)
-	route.GET("/:name", svc.FindOne)
+	route.GET("/:id", svc.FindOne)
 	route.GET("/search/:name", svc.SearchFoods)
 }
 

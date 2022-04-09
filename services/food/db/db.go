@@ -18,5 +18,7 @@ func Init(url string) Handler {
 		log.Fatal(err)
 	}
 
+	loadFoodData(db)
+
 	return Handler{db}
 }
