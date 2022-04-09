@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/moromin/PFC-balancer/services/food/db"
 	"github.com/moromin/PFC-balancer/services/food/proto"
@@ -17,13 +16,13 @@ type Server struct {
 const findOne = `
 SELECT *
 FROM foods
-WHERE name = $1
+WHERE id = $1
 `
 
 func (s *Server) FindOne(ctx context.Context, req *proto.FindOneRequest) (*proto.FindOneResponse, error) {
 	var data proto.FoodData
 
-	row := s.H.DB.QueryRowContext(ctx, findOne, req.Name)
+	row := s.H.DB.QueryRowContext(ctx, findOne, req.Id)
 	err := row.Scan(
 		&data.Id,
 		&data.Name,
@@ -33,12 +32,11 @@ func (s *Server) FindOne(ctx context.Context, req *proto.FindOneRequest) (*proto
 		&data.Category,
 	)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "%s is not found", req.Name)
+		return nil, status.Errorf(codes.NotFound, "%s is not found", req.Id)
 	}
 
 	return &proto.FindOneResponse{
-		Status: http.StatusOK,
-		Data:   &data,
+		Data: &data,
 	}, nil
 }
 
@@ -80,7 +78,6 @@ func (s *Server) ListFoods(ctx context.Context, req *proto.ListFoodsRequest) (*p
 	}
 
 	return &proto.ListFoodsResponse{
-		Status:   http.StatusOK,
 		FoodList: foodList,
 	}, nil
 }
@@ -124,7 +121,6 @@ func (s *Server) SearchFoods(ctx context.Context, req *proto.SearchFoodsRequest)
 	}
 
 	return &proto.SearchFoodsResponse{
-		Status:   http.StatusOK,
 		FoodList: foodList,
 	}, nil
 }

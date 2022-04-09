@@ -10,7 +10,6 @@ service FoodService {
     rpc SearchFoods(SearchFoodsRequest) returns (SearchFoodsResponse) {}
 }
 
-// FindOne
 message FoodData {
     int64 id = 1;
     string name = 2;
@@ -20,21 +19,20 @@ message FoodData {
     int64 category = 6;
 }
 
+// FindOne
 message FindOneRequest {
-    string name = 1;
+    int64 id = 1;
 }
 
 message FindOneResponse {
-    int64 status = 1;
-    FoodData data = 2;
+    FoodData data = 1;
 }
 
 // ListFoods
 message ListFoodsRequest {}
 
 message ListFoodsResponse {
-    int64 status = 1;
-    repeated FoodData food_list = 2;
+    repeated FoodData food_list = 1;
 }
 
 // SearchFoods
@@ -43,6 +41,5 @@ message SearchFoodsRequest {
 }
 
 message SearchFoodsResponse {
-    int64 status = 1;
-    repeated FoodData food_list = 2;
+    repeated FoodData food_list = 1;
 }
