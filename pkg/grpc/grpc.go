@@ -10,6 +10,7 @@ import (
 	ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 type Server struct {
@@ -33,6 +34,7 @@ func NewServer(port int, register func(*grpc.Server)) *Server {
 	server := grpc.NewServer(opts...)
 
 	register(server)
+	reflection.Register(server)
 
 	return &Server{
 		server: server,
