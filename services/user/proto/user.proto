@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package user;
 
-option go_package = "./proto";
+option go_package = "github.com/moromin/PFC-balancer/services/user/proto";
 
 service UserService {
     rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);

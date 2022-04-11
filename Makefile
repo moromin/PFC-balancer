@@ -1,21 +1,25 @@
-PROTOC_GRPC = protoc  --go_out=. \
-    		--go-grpc_out=. --go-grpc_opt=require_unimplemented_servers=false,\
-			proto/*.proto
+MAKE_PATH = .
+
+PROTOC_GRPC = protoc -I . \
+			--go_out ./${MAKE_PATH} \
+    		--go-grpc_out ./${MAKE_PATH} \
+			--go-grpc_opt=paths=source_relative,\
+			--go-grpc_opt=require_unimplemented_servers=false,\
+			./${MAKE_PATH}/proto/*.proto
 
 PROTOC_GATEWAY = protoc -I . \
-				--grpc-gateway_out . \
+				--grpc-gateway_out ./${MAKE_PATH} \
 				--grpc-gateway_opt logtostderr=true \
 				--grpc-gateway_opt paths=source_relative \
 				--grpc-gateway_opt generate_unbound_methods=true \
-				proto/*.proto
-
-MAKE_PATH = platform/db/db
+				./${MAKE_PATH}/proto/*.proto
 
 protoc:
-	cd ${MAKE_PATH} && $(PROTOC_GRPC)
+# cd ${MAKE_PATH} && $(PROTOC_GRPC)
+	$(PROTOC_GRPC)
 
 gateway:
-	cd ${MAKE_PATH} && $(PROTOC_GATEWAY)
+	$(PROTOC_GATEWAY)
 
 run:
 	cd ${MAKE_PATH} && go run main.go
