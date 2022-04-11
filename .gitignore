@@ -5,3 +5,4 @@ dev.env
 *.code-workspace
 thunder-tests
 .DS_Store
+client

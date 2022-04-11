@@ -1,16 +1,13 @@
-MIGRATION_PATH	= db/migration
-FOOD_DB_PATH = db/food
+PROTOC_GRPC = protoc  --go_out=. \
+    		--go-grpc_out=. --go-grpc_opt=require_unimplemented_servers=false,\
+			proto/*.proto
 
-migrateup:
-	migrate -path $(MIGRATION_PATH) -database "postgresql://postgres:password@localhost:5432/balance-app?sslmode=disable" -verbose up
+MAKE_PATH = platform/db/db
 
-migratedown:
-	migrate -path $(MIGRATION_PATH) -database "postgresql://postgres:password@localhost:5432/balance-app?sslmode=disable" -verbose down
+protoc:
+	cd ${MAKE_PATH} && $(PROTOC_GRPC)
 
-sqlc:
-	sqlc generate
+run:
+	cd ${MAKE_PATH} && go run main.go
 
-food-db:
-	go1.18 run db/food/main.go
-
-.PHONY: migrateup migratedown sqlc
+.PHONY:

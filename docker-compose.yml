@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  db:
+  postgres:
     image: postgres:14
     environment:
       POSTGRES_USER: moromin
@@ -12,23 +12,32 @@ services:
     volumes:
       # TODO: confirm details
       - db_volume:/var/lib/postgres:cached
-      # - ./platform/db/conf.d:/etc/postgres/conf.d
 
   migrate:
-    build: ./platform/db
+    build: ./platform/db/migrations
     depends_on:
-      - db
+      - postgres
     command: [ "up" ]
     environment:
-      WAIT_HOSTS: db:5432
+      WAIT_HOSTS: postgres:5432
       MIGRATIONS_DIR: ./migrations
       POSTGRES_USER: moromin
       POSTGRES_PASSWORD: password
-      POSTGRES_HOST: db
+      POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: pfc-balancer
     volumes:
-      - ./platform/db/migrations:/migrations
+      - ./platform/db/migrations/migrations:/migrations
+  # db:
+  #   build:
+  #     context: .
+  #     dockerfile: platform/db/db/Dockerfile
+  #   environment:
+  #     POSTGRES_USER: moromin
+  #     POSTGRES_PASSWORD: password
+  #     POSTGRES_HOST: postgres
+  #     POSTGRES_PORT: 5432
+  #     POSTGRES_DB: pfc-balancer
 
 volumes:
   db_volume:

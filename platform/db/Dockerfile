@@ -1,9 +1,12 @@
-FROM migrate/migrate
+FROM golang:1.18.0-bullseye
 
-ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
-RUN chmod +x /wait
+WORKDIR /go/src/github.com/moromin/PFC-balancer
 
-COPY entrypoint.sh /usr/local/bin
-RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY go.mod go.mod
+COPY go.sum go.sum
+RUN go mod download
 
-ENTRYPOINT ["entrypoint.sh"]
+COPY . .
+RUN go build -o /usr/bin/db ./platform/db/db
+
+CMD ["/usr/bin/db"]
