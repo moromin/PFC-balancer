@@ -9,7 +9,6 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/moromin/PFC-balancer/platform/db/config"
 	"github.com/moromin/PFC-balancer/platform/db/models"
-	"github.com/moromin/PFC-balancer/platform/db/utils"
 )
 
 var _ DB = (*dbWrapper)(nil)
@@ -47,7 +46,6 @@ INSERT INTO users (
 `
 
 func (w *dbWrapper) CreateUser(ctx context.Context, email, password string) (*models.User, error) {
-	password = utils.HashPassword(password)
 	_, err := w.db.ExecContext(ctx, createUser, email, password)
 	if err != nil {
 		return nil, ErrAlreadyExists
@@ -63,7 +61,7 @@ func (w *dbWrapper) CreateUser(ctx context.Context, email, password string) (*mo
 }
 
 const findUserByEmail = `
-SELECT id, email
+SELECT *
 FROM users
 WHERE email = $1
 `
@@ -71,7 +69,7 @@ WHERE email = $1
 func (w *dbWrapper) FindUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	var user models.User
 
-	if err := w.db.QueryRowContext(ctx, findUserByEmail, email).Scan(&user.Id, &user.Email); err != nil {
+	if err := w.db.QueryRowContext(ctx, findUserByEmail, email).Scan(&user.Id, &user.Email, &user.Password); err != nil {
 		return nil, ErrNotFound
 	}
 

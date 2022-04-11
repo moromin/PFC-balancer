@@ -29,4 +29,5 @@ message FindUserByEmailResponse {
 message User {
     int64 id = 1;
     string email = 2;
+    string password = 3;
 }

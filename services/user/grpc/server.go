@@ -58,5 +58,6 @@ func (s *server) FindUserByEmail(ctx context.Context, req *proto.FindUserByEmail
 			Id:    user.Id,
 			Email: user.Email,
 		},
+		Password: user.Password,
 	}, nil
 }
