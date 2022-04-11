@@ -17,3 +17,7 @@ graph LR;
 ### Food
 ### DB
 - Port: `localhost:5000`
+
+## Reference
+### gRPC Gateway
+The `google` directory was copied from [googleapis](https://github.com/googleapis/googleapis) to generate stubs for the gPRC gateway with the `protoc` command.
