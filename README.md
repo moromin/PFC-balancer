@@ -12,5 +12,8 @@ graph LR;
 ### Gateway
 ### Auth
 ### Users
+- Port: `localhost:50054`
 ### Recipe
 ### Food
+### DB
+- Port: `localhost:5000`
