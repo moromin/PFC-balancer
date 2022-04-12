@@ -1,6 +1,8 @@
 # PFC-balancer
 PFC-balancer is a microservice that allows you to create and retrieve information about foods and recipes based on them.
 
+This service was created with reference to [mercari-microservices-example](https://github.com/mercari/mercari-microservices-example).
+
 ```mermaid
 graph LR;
     A(gateway) --> B(auth)
@@ -54,3 +56,5 @@ Specify the following path followed by `localhost:4000`
 - [Microservices in Go with gRPC, API Gateway, and Authentication — Part 1/2](https://levelup.gitconnected.com/microservices-with-go-grpc-api-gateway-and-authentication-part-1-2-393ad9fc9d30)
 
 - [mercari-microservices-example](https://github.com/mercari/mercari-microservices-example)
+
+- [日本食品標準成分表・資源に関する取組:文部科学省](https://www.mext.go.jp/a_menu/syokuhinseibun/)
