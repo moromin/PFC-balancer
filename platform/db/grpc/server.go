@@ -8,6 +8,7 @@ import (
 	"github.com/moromin/PFC-balancer/platform/db/models"
 	"github.com/moromin/PFC-balancer/platform/db/proto"
 	food "github.com/moromin/PFC-balancer/services/food/proto"
+	recipe "github.com/moromin/PFC-balancer/services/recipe/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -155,9 +156,9 @@ func (s *server) FindRecipeById(ctx context.Context, req *proto.FindRecipeByIdRe
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
-	foodAmounts := make([]*proto.FoodAmount, len(r.FoodAmounts))
+	foodAmounts := make([]*recipe.FoodAmount, len(r.FoodAmounts))
 	for i, fa := range r.FoodAmounts {
-		foodAmounts[i] = &proto.FoodAmount{
+		foodAmounts[i] = &recipe.FoodAmount{
 			FoodId: fa.FoodId,
 			Amount: fa.Amount,
 		}
@@ -185,9 +186,9 @@ func (s *server) ListRecipes(ctx context.Context, req *proto.ListRecipesRequest)
 
 	res := make([]*proto.Recipe, len(recipes))
 	for i, r := range recipes {
-		foodAmounts := make([]*proto.FoodAmount, len(r.FoodAmounts))
+		foodAmounts := make([]*recipe.FoodAmount, len(r.FoodAmounts))
 		for j, fa := range r.FoodAmounts {
-			foodAmounts[j] = &proto.FoodAmount{
+			foodAmounts[j] = &recipe.FoodAmount{
 				FoodId: fa.FoodId,
 				Amount: fa.Amount,
 			}
