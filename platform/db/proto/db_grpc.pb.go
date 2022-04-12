@@ -22,8 +22,13 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DBServiceClient interface {
+	// user
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 	FindUserByEmail(ctx context.Context, in *FindUserByEmailRequest, opts ...grpc.CallOption) (*FindUserByEmailResponse, error)
+	// food
+	FindFoodById(ctx context.Context, in *FindFoodByIdRequest, opts ...grpc.CallOption) (*FindFoodByIdResponse, error)
+	ListFoods(ctx context.Context, in *ListFoodsRequest, opts ...grpc.CallOption) (*ListFoodsResponse, error)
+	SearchFoods(ctx context.Context, in *SearchFoodsRequest, opts ...grpc.CallOption) (*SearchFoodsResponse, error)
 }
 
 type dBServiceClient struct {
@@ -52,12 +57,44 @@ func (c *dBServiceClient) FindUserByEmail(ctx context.Context, in *FindUserByEma
 	return out, nil
 }
 
+func (c *dBServiceClient) FindFoodById(ctx context.Context, in *FindFoodByIdRequest, opts ...grpc.CallOption) (*FindFoodByIdResponse, error) {
+	out := new(FindFoodByIdResponse)
+	err := c.cc.Invoke(ctx, "/db.DBService/FindFoodById", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBServiceClient) ListFoods(ctx context.Context, in *ListFoodsRequest, opts ...grpc.CallOption) (*ListFoodsResponse, error) {
+	out := new(ListFoodsResponse)
+	err := c.cc.Invoke(ctx, "/db.DBService/ListFoods", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBServiceClient) SearchFoods(ctx context.Context, in *SearchFoodsRequest, opts ...grpc.CallOption) (*SearchFoodsResponse, error) {
+	out := new(SearchFoodsResponse)
+	err := c.cc.Invoke(ctx, "/db.DBService/SearchFoods", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DBServiceServer is the server API for DBService service.
 // All implementations should embed UnimplementedDBServiceServer
 // for forward compatibility
 type DBServiceServer interface {
+	// user
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	FindUserByEmail(context.Context, *FindUserByEmailRequest) (*FindUserByEmailResponse, error)
+	// food
+	FindFoodById(context.Context, *FindFoodByIdRequest) (*FindFoodByIdResponse, error)
+	ListFoods(context.Context, *ListFoodsRequest) (*ListFoodsResponse, error)
+	SearchFoods(context.Context, *SearchFoodsRequest) (*SearchFoodsResponse, error)
 }
 
 // UnimplementedDBServiceServer should be embedded to have forward compatible implementations.
@@ -69,6 +106,15 @@ func (UnimplementedDBServiceServer) CreateUser(context.Context, *CreateUserReque
 }
 func (UnimplementedDBServiceServer) FindUserByEmail(context.Context, *FindUserByEmailRequest) (*FindUserByEmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindUserByEmail not implemented")
+}
+func (UnimplementedDBServiceServer) FindFoodById(context.Context, *FindFoodByIdRequest) (*FindFoodByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindFoodById not implemented")
+}
+func (UnimplementedDBServiceServer) ListFoods(context.Context, *ListFoodsRequest) (*ListFoodsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListFoods not implemented")
+}
+func (UnimplementedDBServiceServer) SearchFoods(context.Context, *SearchFoodsRequest) (*SearchFoodsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchFoods not implemented")
 }
 
 // UnsafeDBServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -118,6 +164,60 @@ func _DBService_FindUserByEmail_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DBService_FindFoodById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindFoodByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBServiceServer).FindFoodById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBService/FindFoodById",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBServiceServer).FindFoodById(ctx, req.(*FindFoodByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBService_ListFoods_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListFoodsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBServiceServer).ListFoods(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBService/ListFoods",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBServiceServer).ListFoods(ctx, req.(*ListFoodsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBService_SearchFoods_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchFoodsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBServiceServer).SearchFoods(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBService/SearchFoods",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBServiceServer).SearchFoods(ctx, req.(*SearchFoodsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DBService_ServiceDesc is the grpc.ServiceDesc for DBService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -132,6 +232,18 @@ var DBService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindUserByEmail",
 			Handler:    _DBService_FindUserByEmail_Handler,
+		},
+		{
+			MethodName: "FindFoodById",
+			Handler:    _DBService_FindFoodById_Handler,
+		},
+		{
+			MethodName: "ListFoods",
+			Handler:    _DBService_ListFoods_Handler,
+		},
+		{
+			MethodName: "SearchFoods",
+			Handler:    _DBService_SearchFoods_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

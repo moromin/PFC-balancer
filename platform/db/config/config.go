@@ -1,7 +1,11 @@
 package config
 
 import (
+	"fmt"
+	"log"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -13,6 +17,11 @@ type Config struct {
 }
 
 func LoadConfig() (config Config) {
+	// TODO: delete this and dev.env and replace Dockerfile
+	if err := godotenv.Load("config/dev.env"); err != nil {
+		log.Fatal(err)
+	}
+
 	config = Config{
 		User:     os.Getenv("POSTGRES_USER"),
 		Password: os.Getenv("POSTGRES_PASSWORD"),
@@ -24,7 +33,5 @@ func LoadConfig() (config Config) {
 }
 
 func (c *Config) GetDBUrl() string {
-	// TODO: get url from environment values
-	// return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", c.User, c.Password, c.Host, c.Port, c.DBName)
-	return "postgres://kazuma:@localhost:5432/auth_svc?sslmode=disable"
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", c.User, c.Password, c.Host, c.Port, c.DBName)
 }
