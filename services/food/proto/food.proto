@@ -2,15 +2,15 @@ syntax = "proto3";
 
 package food;
 
-option go_package = "./proto";
+option go_package = "github.com/moromin/PFC-balancer/services/food/proto";
 
 service FoodService {
-    rpc FindOne(FindOneRequest) returns (FindOneResponse) {}
+    rpc FindFoodById(FindFoodByIdRequest) returns (FindFoodByIdResponse) {}
     rpc ListFoods(ListFoodsRequest) returns (ListFoodsResponse) {}
     rpc SearchFoods(SearchFoodsRequest) returns (SearchFoodsResponse) {}
 }
 
-message FoodData {
+message Food {
     int64 id = 1;
     string name = 2;
     double protein = 3;
@@ -19,20 +19,20 @@ message FoodData {
     int64 category = 6;
 }
 
-// FindOne
-message FindOneRequest {
+// FindById
+message FindFoodByIdRequest {
     int64 id = 1;
 }
 
-message FindOneResponse {
-    FoodData data = 1;
+message FindFoodByIdResponse {
+    Food food = 1;
 }
 
 // ListFoods
 message ListFoodsRequest {}
 
 message ListFoodsResponse {
-    repeated FoodData food_list = 1;
+    repeated Food food_list = 1;
 }
 
 // SearchFoods
@@ -41,5 +41,5 @@ message SearchFoodsRequest {
 }
 
 message SearchFoodsResponse {
-    repeated FoodData food_list = 1;
+    repeated Food food_list = 1;
 }

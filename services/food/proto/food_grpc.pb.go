@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.19.4
-// source: proto/food.proto
+// source: services/food/proto/food.proto
 
 package proto
 
@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FoodServiceClient interface {
-	FindOne(ctx context.Context, in *FindOneRequest, opts ...grpc.CallOption) (*FindOneResponse, error)
+	FindFoodById(ctx context.Context, in *FindFoodByIdRequest, opts ...grpc.CallOption) (*FindFoodByIdResponse, error)
 	ListFoods(ctx context.Context, in *ListFoodsRequest, opts ...grpc.CallOption) (*ListFoodsResponse, error)
 	SearchFoods(ctx context.Context, in *SearchFoodsRequest, opts ...grpc.CallOption) (*SearchFoodsResponse, error)
 }
@@ -35,9 +35,9 @@ func NewFoodServiceClient(cc grpc.ClientConnInterface) FoodServiceClient {
 	return &foodServiceClient{cc}
 }
 
-func (c *foodServiceClient) FindOne(ctx context.Context, in *FindOneRequest, opts ...grpc.CallOption) (*FindOneResponse, error) {
-	out := new(FindOneResponse)
-	err := c.cc.Invoke(ctx, "/food.FoodService/FindOne", in, out, opts...)
+func (c *foodServiceClient) FindFoodById(ctx context.Context, in *FindFoodByIdRequest, opts ...grpc.CallOption) (*FindFoodByIdResponse, error) {
+	out := new(FindFoodByIdResponse)
+	err := c.cc.Invoke(ctx, "/food.FoodService/FindFoodById", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c *foodServiceClient) SearchFoods(ctx context.Context, in *SearchFoodsRequ
 // All implementations should embed UnimplementedFoodServiceServer
 // for forward compatibility
 type FoodServiceServer interface {
-	FindOne(context.Context, *FindOneRequest) (*FindOneResponse, error)
+	FindFoodById(context.Context, *FindFoodByIdRequest) (*FindFoodByIdResponse, error)
 	ListFoods(context.Context, *ListFoodsRequest) (*ListFoodsResponse, error)
 	SearchFoods(context.Context, *SearchFoodsRequest) (*SearchFoodsResponse, error)
 }
@@ -75,8 +75,8 @@ type FoodServiceServer interface {
 type UnimplementedFoodServiceServer struct {
 }
 
-func (UnimplementedFoodServiceServer) FindOne(context.Context, *FindOneRequest) (*FindOneResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FindOne not implemented")
+func (UnimplementedFoodServiceServer) FindFoodById(context.Context, *FindFoodByIdRequest) (*FindFoodByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindFoodById not implemented")
 }
 func (UnimplementedFoodServiceServer) ListFoods(context.Context, *ListFoodsRequest) (*ListFoodsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListFoods not implemented")
@@ -96,20 +96,20 @@ func RegisterFoodServiceServer(s grpc.ServiceRegistrar, srv FoodServiceServer) {
 	s.RegisterService(&FoodService_ServiceDesc, srv)
 }
 
-func _FoodService_FindOne_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FindOneRequest)
+func _FoodService_FindFoodById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindFoodByIdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FoodServiceServer).FindOne(ctx, in)
+		return srv.(FoodServiceServer).FindFoodById(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/food.FoodService/FindOne",
+		FullMethod: "/food.FoodService/FindFoodById",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FoodServiceServer).FindOne(ctx, req.(*FindOneRequest))
+		return srv.(FoodServiceServer).FindFoodById(ctx, req.(*FindFoodByIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -158,8 +158,8 @@ var FoodService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*FoodServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "FindOne",
-			Handler:    _FoodService_FindOne_Handler,
+			MethodName: "FindFoodById",
+			Handler:    _FoodService_FindFoodById_Handler,
 		},
 		{
 			MethodName: "ListFoods",
@@ -171,5 +171,5 @@ var FoodService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/food.proto",
+	Metadata: "services/food/proto/food.proto",
 }
