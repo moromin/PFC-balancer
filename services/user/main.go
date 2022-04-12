@@ -30,7 +30,7 @@ func run(ctx context.Context) int {
 
 	errCh := make(chan error, 1)
 	go func() {
-		errCh <- grpc.RunServer(ctx, 50054, l)
+		errCh <- grpc.RunServer(ctx, 50052, l)
 	}()
 
 	select {

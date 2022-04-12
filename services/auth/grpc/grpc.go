@@ -17,7 +17,7 @@ func RunServer(ctx context.Context, port int, l *zap.Logger) error {
 		grpc.WithBlock(),
 	}
 
-	conn, err := grpc.DialContext(ctx, "localhost:50054", opts...)
+	conn, err := grpc.DialContext(ctx, "localhost:50052", opts...)
 	if err != nil {
 		return err
 	}

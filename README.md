@@ -3,11 +3,12 @@
 ```mermaid
 graph LR;
     A(gateway) --> B(auth)
-    A --> C(recipe)
-    A --> E(food)
+    A --> C(menu)
     B --> D(user)
     C --> D
-    C --> E
+    C --> E(recipe)
+    E --> F(food)
+    C --> F
 ```
 ## Microservices
 ### Gateway
@@ -15,10 +16,13 @@ graph LR;
 ### Auth
 - Port: `localhost:50051`
 ### Users
-- Port: `localhost:50054`
-### Recipe
-### Food
 - Port: `localhost:50052`
+### Menu
+- Port: `localhost:50053`
+### Recipe
+- Port: `localhost:50054`
+### Food
+- Port: `localhost:50055`
 ### DB
 - Port: `localhost:5000`
 
