@@ -41,13 +41,16 @@ make
 
 ## Endpoints
 Specify the following path followed by `localhost:4000`
-| Service | Method | Endpoint       |
-|---------|--------|----------------|
-| Resister  | `POST` | `/auth/register/` |
-| Login  | `POST` | `/auth/login/` |
-| Find food by ID | `GET` | `/menu/foods/{id}` |
-| List all foods  | `GET` | `/menu/foods` |
-| Search foods  | `GET` | `/menu/foods/search/{name}` |
+| Service | Method | Endpoint       | Auth |
+|---------|--------|----------------|------|
+| Resister  | `POST` | `/auth/register/` | × |
+| Login  | `POST` | `/auth/login/` | × |
+| List all foods  | `GET` | `/menu/foods` | × |
+| Find food by ID | `GET` | `/menu/foods/{id}` | × |
+| Search foods  | `GET` | `/menu/foods/search/{name}` | × |
+| Create new recipe  | `POST` | `/menu/recipes` | ✔︎ |
+| List all recipes  | `GET` | `/menu/recipes` | × |
+| Find recipe by ID  | `GET` | `/menu/recipes/{id}` | × |
 
 ## Reference
 - [grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway)
