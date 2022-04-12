@@ -234,9 +234,9 @@ func (w *dbWrapper) CreateRecipe(ctx context.Context, name string, foodAmounts [
 }
 
 const findRecipe = `
-SELECT name
+SELECT *
 FROM recipes
-WHERE id = $1 AND user_id = $2
+WHERE id = $1
 `
 
 const findProcedures = `

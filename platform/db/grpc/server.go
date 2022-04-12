@@ -125,7 +125,7 @@ func (s *server) SearchFoods(ctx context.Context, req *proto.SearchFoodsRequest)
 
 func (s *server) CreateRecipe(ctx context.Context, req *proto.CreateRecipeRequest) (*proto.CreateRecipeResponse, error) {
 	foodAmounts := make([]*models.FoodAmount, len(req.FoodAmounts))
-	for i, fa := range foodAmounts {
+	for i, fa := range req.FoodAmounts {
 		foodAmounts[i] = &models.FoodAmount{
 			FoodId: fa.FoodId,
 			Amount: fa.Amount,
