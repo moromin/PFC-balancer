@@ -5,11 +5,13 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/moromin/PFC-balancer/services/auth/models"
+	"github.com/moromin/PFC-balancer/platform/db/models"
 )
 
+//go:embed jwtSecretKey.txt
+var jwtSecretKey []byte
+
 type JwtWrapper struct {
-	SecretKey       string
 	Issuer          string
 	ExpirationHours int64
 }
@@ -32,7 +34,7 @@ func (w *JwtWrapper) GenerateToken(user models.User) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	signedToken, err := token.SignedString([]byte(w.SecretKey))
+	signedToken, err := token.SignedString(jwtSecretKey)
 
 	if err != nil {
 		return "", err
@@ -46,7 +48,7 @@ func (w *JwtWrapper) ValidateToken(signedToken string) (*jwtClaims, error) {
 		signedToken,
 		&jwtClaims{},
 		func(token *jwt.Token) (interface{}, error) {
-			return []byte(w.SecretKey), nil
+			return jwtSecretKey, nil
 		},
 	)
 
