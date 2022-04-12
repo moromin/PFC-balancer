@@ -58,7 +58,7 @@ func (s *server) FindFoodById(ctx context.Context, req *proto.FindFoodByIdReques
 		if errors.Is(err, db.ErrNotFound) {
 			return nil, status.Error(codes.NotFound, "not found")
 		}
-		return nil, status.Error(codes.Internal, "internal error")
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	return &proto.FindFoodByIdResponse{
@@ -76,13 +76,13 @@ func (s *server) FindFoodById(ctx context.Context, req *proto.FindFoodByIdReques
 func (s *server) ListFoods(ctx context.Context, req *proto.ListFoodsRequest) (*proto.ListFoodsResponse, error) {
 	fl, err := s.db.ListFoods(ctx)
 	if err != nil {
-		return nil, status.Error(codes.Internal, "internal error")
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	var foodList []*food.Food
 	for _, f := range fl {
 		food := &food.Food{
-			Id:           f.Category,
+			Id:           f.Id,
 			Name:         f.Name,
 			Protein:      f.Protein,
 			Fat:          f.Fat,
@@ -100,13 +100,13 @@ func (s *server) ListFoods(ctx context.Context, req *proto.ListFoodsRequest) (*p
 func (s *server) SearchFoods(ctx context.Context, req *proto.SearchFoodsRequest) (*proto.SearchFoodsResponse, error) {
 	fl, err := s.db.SearchFoods(ctx, req.Name)
 	if err != nil {
-		return nil, status.Error(codes.Internal, "internal error")
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	var foodList []*food.Food
 	for _, f := range fl {
 		food := &food.Food{
-			Id:           f.Category,
+			Id:           f.Id,
 			Name:         f.Name,
 			Protein:      f.Protein,
 			Fat:          f.Fat,

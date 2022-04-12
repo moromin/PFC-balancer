@@ -90,7 +90,7 @@ WHERE id = $1
 func (w *dbWrapper) FindFoodById(ctx context.Context, id int64) (*models.Food, error) {
 	var food models.Food
 
-	if err := w.db.QueryRowContext(ctx, findFoodById).Scan(&food.Id, &food.Name, &food.Protein, &food.Fat, &food.Carbohydrate, &food.Category); err != nil {
+	if err := w.db.QueryRowContext(ctx, findFoodById, id).Scan(&food.Id, &food.Name, &food.Protein, &food.Fat, &food.Carbohydrate, &food.Category); err != nil {
 		return nil, ErrNotFound
 	}
 
