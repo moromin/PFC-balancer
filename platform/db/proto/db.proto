@@ -47,7 +47,7 @@ message FindUserByIdRequest {
 }
 
 message FindUserByIdResponse {
-    User user = 2;
+    User user = 1;
 }
 
 message User {
