@@ -6,6 +6,7 @@ import (
 
 	"github.com/moromin/PFC-balancer/platform/db/db"
 	"github.com/moromin/PFC-balancer/platform/db/proto"
+	food "github.com/moromin/PFC-balancer/services/food/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -48,5 +49,74 @@ func (s *server) FindUserByEmail(ctx context.Context, req *proto.FindUserByEmail
 			Email:    u.Email,
 			Password: u.Password,
 		},
+	}, nil
+}
+
+func (s *server) FindFoodById(ctx context.Context, req *proto.FindFoodByIdRequest) (*proto.FindFoodByIdResponse, error) {
+	f, err := s.db.FindFoodById(ctx, req.Id)
+	if err != nil {
+		if errors.Is(err, db.ErrNotFound) {
+			return nil, status.Error(codes.NotFound, "not found")
+		}
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &proto.FindFoodByIdResponse{
+		Food: &food.Food{
+			Id:           f.Category,
+			Name:         f.Name,
+			Protein:      f.Protein,
+			Fat:          f.Fat,
+			Carbohydrate: f.Carbohydrate,
+			Category:     f.Category,
+		},
+	}, nil
+}
+
+func (s *server) ListFoods(ctx context.Context, req *proto.ListFoodsRequest) (*proto.ListFoodsResponse, error) {
+	fl, err := s.db.ListFoods(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	var foodList []*food.Food
+	for _, f := range fl {
+		food := &food.Food{
+			Id:           f.Id,
+			Name:         f.Name,
+			Protein:      f.Protein,
+			Fat:          f.Fat,
+			Carbohydrate: f.Carbohydrate,
+			Category:     f.Category,
+		}
+		foodList = append(foodList, food)
+	}
+
+	return &proto.ListFoodsResponse{
+		FoodList: foodList,
+	}, nil
+}
+
+func (s *server) SearchFoods(ctx context.Context, req *proto.SearchFoodsRequest) (*proto.SearchFoodsResponse, error) {
+	fl, err := s.db.SearchFoods(ctx, req.Name)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	var foodList []*food.Food
+	for _, f := range fl {
+		food := &food.Food{
+			Id:           f.Id,
+			Name:         f.Name,
+			Protein:      f.Protein,
+			Fat:          f.Fat,
+			Carbohydrate: f.Carbohydrate,
+			Category:     f.Category,
+		}
+		foodList = append(foodList, food)
+	}
+
+	return &proto.SearchFoodsResponse{
+		FoodList: foodList,
 	}, nil
 }

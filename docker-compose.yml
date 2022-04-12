@@ -10,24 +10,24 @@ services:
     ports:
       - 5432:5432
     volumes:
-      # TODO: confirm details
-      - db_volume:/var/lib/postgres:cached
-
-  migrate:
-    build: ./platform/db/migrations
-    depends_on:
-      - postgres
-    command: [ "up" ]
-    environment:
-      WAIT_HOSTS: postgres:5432
-      MIGRATIONS_DIR: ./migrations
-      POSTGRES_USER: moromin
-      POSTGRES_PASSWORD: password
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_DB: pfc-balancer
-    volumes:
-      - ./platform/db/migrations/migrations:/migrations
+      - ./platform/db/postgres/csvs:/var/lib/postgresql/csvs
+      - ./platform/db/postgres/01_init_schema.sql:/docker-entrypoint-initdb.d/01_init_schema.sql
+      - ./platform/db/postgres/02_load_foods.sql:/docker-entrypoint-initdb.d/02_load_foods.sql
+  # migrate:
+  #   build: ./platform/db/migrations
+  #   depends_on:
+  #     - postgres
+  #   command: [ "up" ]
+  #   environment:
+  #     WAIT_HOSTS: postgres:5432
+  #     MIGRATIONS_DIR: ./migrations
+  #     POSTGRES_USER: moromin
+  #     POSTGRES_PASSWORD: password
+  #     POSTGRES_HOST: postgres
+  #     POSTGRES_PORT: 5432
+  #     POSTGRES_DB: pfc-balancer
+  #   volumes:
+  #     - ./platform/db/migrations/migrations:/migrations
   # db:
   #   build:
   #     context: .

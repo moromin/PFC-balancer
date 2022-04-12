@@ -4,9 +4,17 @@ package db;
 
 option go_package = "./proto";
 
+import "services/food/proto/food.proto";
+
 service DBService {
+    // user
     rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
     rpc FindUserByEmail(FindUserByEmailRequest) returns (FindUserByEmailResponse);
+
+    // food
+    rpc FindFoodById(FindFoodByIdRequest) returns (FindFoodByIdResponse);
+    rpc ListFoods(ListFoodsRequest) returns (ListFoodsResponse);
+    rpc SearchFoods(SearchFoodsRequest) returns (SearchFoodsResponse);
 }
 
 message CreateUserRequest {
@@ -30,4 +38,26 @@ message User {
     int64 id = 1;
     string email = 2;
     string password = 3;
+}
+
+message FindFoodByIdRequest {
+    int64 id = 1;
+}
+
+message FindFoodByIdResponse {
+    food.Food food = 1;
+}
+
+message ListFoodsRequest {}
+
+message ListFoodsResponse {
+    repeated food.Food food_list = 1;
+}
+
+message SearchFoodsRequest {
+    string name = 1;
+}
+
+message SearchFoodsResponse {
+    repeated food.Food food_list = 1;
 }

@@ -3,18 +3,36 @@
 ```mermaid
 graph LR;
     A(gateway) --> B(auth)
-    A(gateway) --> C(recipe)
+    A --> C(menu)
     B --> D(user)
     C --> D
-    C --> E(food)
+    C --> E(recipe)
+    E --> F(food)
+    C --> F
 ```
+
+## Get started
+``` bash
+# start up postgres
+docker compose up -d
+
+# run each services
+make
+```
+
 ## Microservices
 ### Gateway
+- Port: `localhost:4000`
 ### Auth
+- Port: `localhost:50051`
 ### Users
-- Port: `localhost:50054`
+- Port: `localhost:50052`
+### Menu
+- Port: `localhost:50053`
 ### Recipe
+- Port: `localhost:50054`
 ### Food
+- Port: `localhost:50055`
 ### DB
 - Port: `localhost:5000`
 

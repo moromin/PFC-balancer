@@ -14,6 +14,10 @@ PROTOC_GATEWAY = protoc -I . \
 				--grpc-gateway_opt generate_unbound_methods=true \
 				./${MAKE_PATH}/proto/*.proto
 
+# TODO: run all services rule
+all:
+	go run ***
+
 protoc:
 # cd ${MAKE_PATH} && $(PROTOC_GRPC)
 	$(PROTOC_GRPC)
