@@ -38,7 +38,7 @@ func NewMenuServiceClient(cc grpc.ClientConnInterface) MenuServiceClient {
 
 func (c *menuServiceClient) FindFoodById(ctx context.Context, in *FindFoodByIdRequest, opts ...grpc.CallOption) (*FindFoodByIdResponse, error) {
 	out := new(FindFoodByIdResponse)
-	err := c.cc.Invoke(ctx, "/food.MenuService/FindFoodById", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/menu.MenuService/FindFoodById", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (c *menuServiceClient) FindFoodById(ctx context.Context, in *FindFoodByIdRe
 
 func (c *menuServiceClient) ListFoods(ctx context.Context, in *ListFoodsRequest, opts ...grpc.CallOption) (*ListFoodsResponse, error) {
 	out := new(ListFoodsResponse)
-	err := c.cc.Invoke(ctx, "/food.MenuService/ListFoods", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/menu.MenuService/ListFoods", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (c *menuServiceClient) ListFoods(ctx context.Context, in *ListFoodsRequest,
 
 func (c *menuServiceClient) SearchFoods(ctx context.Context, in *SearchFoodsRequest, opts ...grpc.CallOption) (*SearchFoodsResponse, error) {
 	out := new(SearchFoodsResponse)
-	err := c.cc.Invoke(ctx, "/food.MenuService/SearchFoods", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/menu.MenuService/SearchFoods", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func _MenuService_FindFoodById_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/food.MenuService/FindFoodById",
+		FullMethod: "/menu.MenuService/FindFoodById",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MenuServiceServer).FindFoodById(ctx, req.(*FindFoodByIdRequest))
@@ -126,7 +126,7 @@ func _MenuService_ListFoods_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/food.MenuService/ListFoods",
+		FullMethod: "/menu.MenuService/ListFoods",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MenuServiceServer).ListFoods(ctx, req.(*ListFoodsRequest))
@@ -144,7 +144,7 @@ func _MenuService_SearchFoods_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/food.MenuService/SearchFoods",
+		FullMethod: "/menu.MenuService/SearchFoods",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MenuServiceServer).SearchFoods(ctx, req.(*SearchFoodsRequest))
@@ -156,7 +156,7 @@ func _MenuService_SearchFoods_Handler(srv interface{}, ctx context.Context, dec 
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var MenuService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "food.MenuService",
+	ServiceName: "menu.MenuService",
 	HandlerType: (*MenuServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

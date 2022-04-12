@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package food;
+package menu;
 
 option go_package = "github.com/moromin/PFC-balancer/services/menu/proto";
 

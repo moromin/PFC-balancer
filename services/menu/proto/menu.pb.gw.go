@@ -166,7 +166,7 @@ func RegisterMenuServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/food.MenuService/FindFoodById", runtime.WithHTTPPathPattern("/menu/foods/{id}"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/menu.MenuService/FindFoodById", runtime.WithHTTPPathPattern("/menu/foods/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -190,7 +190,7 @@ func RegisterMenuServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/food.MenuService/ListFoods", runtime.WithHTTPPathPattern("/menu/foods"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/menu.MenuService/ListFoods", runtime.WithHTTPPathPattern("/menu/foods"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -214,7 +214,7 @@ func RegisterMenuServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/food.MenuService/SearchFoods", runtime.WithHTTPPathPattern("/menu/foods/search/{name}"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/menu.MenuService/SearchFoods", runtime.WithHTTPPathPattern("/menu/foods/search/{name}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -277,7 +277,7 @@ func RegisterMenuServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/food.MenuService/FindFoodById", runtime.WithHTTPPathPattern("/menu/foods/{id}"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/menu.MenuService/FindFoodById", runtime.WithHTTPPathPattern("/menu/foods/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -298,7 +298,7 @@ func RegisterMenuServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/food.MenuService/ListFoods", runtime.WithHTTPPathPattern("/menu/foods"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/menu.MenuService/ListFoods", runtime.WithHTTPPathPattern("/menu/foods"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -319,7 +319,7 @@ func RegisterMenuServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/food.MenuService/SearchFoods", runtime.WithHTTPPathPattern("/menu/foods/search/{name}"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/menu.MenuService/SearchFoods", runtime.WithHTTPPathPattern("/menu/foods/search/{name}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
