@@ -61,3 +61,25 @@ func (s *server) FindUserByEmail(ctx context.Context, req *proto.FindUserByEmail
 		Password: user.Password,
 	}, nil
 }
+
+func (s *server) FindUserById(ctx context.Context, req *proto.FindUserByIdRequest) (*proto.FindUserByIdResponse, error) {
+	res, err := s.dbClient.FindUserById(ctx, &db.FindUserByIdRequest{
+		Id: req.Id,
+	})
+	if err != nil {
+		st, ok := status.FromError(err)
+		if ok && st.Code() == codes.NotFound {
+			return nil, status.Errorf(codes.NotFound, "not found")
+		}
+		return nil, status.Errorf(codes.Internal, "internal error")
+	}
+
+	user := res.GetUser()
+
+	return &proto.FindUserByIdResponse{
+		User: &proto.User{
+			Id:    user.Id,
+			Email: user.Email,
+		},
+	}, nil
+}

@@ -7,9 +7,9 @@ option go_package = "github.com/moromin/PFC-balancer/services/user/proto";
 service UserService {
     rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
     rpc FindUserByEmail(FindUserByEmailRequest) returns (FindUserByEmailResponse);
+    rpc FindUserById(FindUserByIdRequest) returns (FindUserByIdResponse);
 }
 
-// CreateUser
 message CreateUserRequest {
     string email = 1;
     string password = 2;
@@ -19,7 +19,6 @@ message CreateUserResponse {
     User user = 1;
 }
 
-// FindUserByEmail
 message FindUserByEmailRequest {
     string email = 1;
 }
@@ -27,6 +26,14 @@ message FindUserByEmailRequest {
 message FindUserByEmailResponse {
     User user = 1;
     string password = 2;
+}
+
+message FindUserByIdRequest {
+    int64 id = 1;
+}
+
+message FindUserByIdResponse {
+    User user = 1;
 }
 
 message User {
