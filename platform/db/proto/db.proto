@@ -5,7 +5,6 @@ package db;
 option go_package = "./proto";
 
 import "services/food/proto/food.proto";
-import "services/recipe/proto/recipe.proto";
 
 service DBService {
     // user
@@ -71,9 +70,22 @@ message SearchFoodsResponse {
 }
 
 // recipe
+message FoodAmount {
+    int64 food_id = 1;
+    double amount = 2;
+}
+
+message Recipe {
+    int64 id = 1;
+    string name = 2;
+    repeated FoodAmount food_amounts = 3;
+    repeated string procedures = 4;
+    int64 user_id = 5;
+}
+
 message CreateRecipeRequest {
     string name = 1;
-    repeated recipe.FoodAmount food_amounts = 2;
+    repeated FoodAmount food_amounts = 2;
     repeated string procedures = 3;
     int64 user_id = 4;
 }
@@ -87,11 +99,11 @@ message FindRecipeByIdRequest {
 }
 
 message FindRecipeByIdResponse {
-    recipe.Recipe recipe = 1;
+    Recipe recipe = 1;
 }
 
 message ListRecipesRequest {}
 
 message ListRecipesResponse {
-    repeated recipe.Recipe recipes = 1;
+    repeated Recipe recipes = 1;
 }
