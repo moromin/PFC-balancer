@@ -96,7 +96,7 @@ WHERE id = $1
 func (w *dbWrapper) FindUserById(ctx context.Context, id int64) (*models.User, error) {
 	var user models.User
 
-	if err := w.db.QueryRowContext(ctx, findFoodById, id).Scan(&user.Id, &user.Email, &user.Password); err != nil {
+	if err := w.db.QueryRowContext(ctx, findUserById, id).Scan(&user.Id, &user.Email, &user.Password); err != nil {
 		return nil, ErrNotFound
 	}
 
