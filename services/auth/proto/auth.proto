@@ -20,10 +20,6 @@ service AuthService {
             body: "*"
         };
     }
-    // TODO: implement validate
-    // rpc Validate(ValidateRequest) returns (ValidateResponse) {
-
-    // }
 }
 
 message RegisterRequest {
@@ -43,11 +39,3 @@ message LoginRequest {
 message LoginResponse {
     string token = 1;
 }
-
-// message ValidateRequest {
-//     string token = 1;
-// }
-
-// message ValidateResponse {
-//     user.User user = 1;
-// }
