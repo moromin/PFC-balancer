@@ -25,6 +25,7 @@ type DBServiceClient interface {
 	// user
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 	FindUserByEmail(ctx context.Context, in *FindUserByEmailRequest, opts ...grpc.CallOption) (*FindUserByEmailResponse, error)
+	FindUserById(ctx context.Context, in *FindUserByIdRequest, opts ...grpc.CallOption) (*FindUserByIdResponse, error)
 	// food
 	FindFoodById(ctx context.Context, in *FindFoodByIdRequest, opts ...grpc.CallOption) (*FindFoodByIdResponse, error)
 	ListFoods(ctx context.Context, in *ListFoodsRequest, opts ...grpc.CallOption) (*ListFoodsResponse, error)
@@ -55,6 +56,15 @@ func (c *dBServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest,
 func (c *dBServiceClient) FindUserByEmail(ctx context.Context, in *FindUserByEmailRequest, opts ...grpc.CallOption) (*FindUserByEmailResponse, error) {
 	out := new(FindUserByEmailResponse)
 	err := c.cc.Invoke(ctx, "/db.DBService/FindUserByEmail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBServiceClient) FindUserById(ctx context.Context, in *FindUserByIdRequest, opts ...grpc.CallOption) (*FindUserByIdResponse, error) {
+	out := new(FindUserByIdResponse)
+	err := c.cc.Invoke(ctx, "/db.DBService/FindUserById", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -122,6 +132,7 @@ type DBServiceServer interface {
 	// user
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	FindUserByEmail(context.Context, *FindUserByEmailRequest) (*FindUserByEmailResponse, error)
+	FindUserById(context.Context, *FindUserByIdRequest) (*FindUserByIdResponse, error)
 	// food
 	FindFoodById(context.Context, *FindFoodByIdRequest) (*FindFoodByIdResponse, error)
 	ListFoods(context.Context, *ListFoodsRequest) (*ListFoodsResponse, error)
@@ -141,6 +152,9 @@ func (UnimplementedDBServiceServer) CreateUser(context.Context, *CreateUserReque
 }
 func (UnimplementedDBServiceServer) FindUserByEmail(context.Context, *FindUserByEmailRequest) (*FindUserByEmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindUserByEmail not implemented")
+}
+func (UnimplementedDBServiceServer) FindUserById(context.Context, *FindUserByIdRequest) (*FindUserByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindUserById not implemented")
 }
 func (UnimplementedDBServiceServer) FindFoodById(context.Context, *FindFoodByIdRequest) (*FindFoodByIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindFoodById not implemented")
@@ -204,6 +218,24 @@ func _DBService_FindUserByEmail_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DBServiceServer).FindUserByEmail(ctx, req.(*FindUserByEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBService_FindUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindUserByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBServiceServer).FindUserById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBService/FindUserById",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBServiceServer).FindUserById(ctx, req.(*FindUserByIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -330,6 +362,10 @@ var DBService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindUserByEmail",
 			Handler:    _DBService_FindUserByEmail_Handler,
+		},
+		{
+			MethodName: "FindUserById",
+			Handler:    _DBService_FindUserById_Handler,
 		},
 		{
 			MethodName: "FindFoodById",

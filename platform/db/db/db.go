@@ -22,6 +22,7 @@ var (
 type DB interface {
 	CreateUser(context.Context, string, string) (*models.User, error)
 	FindUserByEmail(context.Context, string) (*models.User, error)
+	FindUserById(context.Context, int64) (*models.User, error)
 
 	FindFoodById(context.Context, int64) (*models.Food, error)
 	ListFoods(context.Context) ([]*models.Food, error)
@@ -80,6 +81,22 @@ func (w *dbWrapper) FindUserByEmail(ctx context.Context, email string) (*models.
 	var user models.User
 
 	if err := w.db.QueryRowContext(ctx, findUserByEmail, email).Scan(&user.Id, &user.Email, &user.Password); err != nil {
+		return nil, ErrNotFound
+	}
+
+	return &user, nil
+}
+
+const findUserById = `
+SELECT *
+FROM users
+WHERE id = $1
+`
+
+func (w *dbWrapper) FindUserById(ctx context.Context, id int64) (*models.User, error) {
+	var user models.User
+
+	if err := w.db.QueryRowContext(ctx, findFoodById, id).Scan(&user.Id, &user.Email, &user.Password); err != nil {
 		return nil, ErrNotFound
 	}
 

@@ -54,6 +54,24 @@ func (s *server) FindUserByEmail(ctx context.Context, req *proto.FindUserByEmail
 	}, nil
 }
 
+func (s *server) FindUserById(ctx context.Context, req *proto.FindUserByIdRequest) (*proto.FindUserByIdResponse, error) {
+	u, err := s.db.FindUserById(ctx, req.Id)
+	if err != nil {
+		if errors.Is(err, db.ErrAlreadyExists) {
+			return nil, status.Error(codes.AlreadyExists, "")
+		}
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	return &proto.FindUserByIdResponse{
+		User: &proto.User{
+			Id:       u.Id,
+			Email:    u.Email,
+			Password: u.Password,
+		},
+	}, nil
+}
+
 func (s *server) FindFoodById(ctx context.Context, req *proto.FindFoodByIdRequest) (*proto.FindFoodByIdResponse, error) {
 	f, err := s.db.FindFoodById(ctx, req.Id)
 	if err != nil {

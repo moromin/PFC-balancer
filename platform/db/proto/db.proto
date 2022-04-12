@@ -11,6 +11,7 @@ service DBService {
     // user
     rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
     rpc FindUserByEmail(FindUserByEmailRequest) returns (FindUserByEmailResponse);
+    rpc FindUserById(FindUserByIdRequest) returns (FindUserByIdResponse);
 
     // food
     rpc FindFoodById(FindFoodByIdRequest) returns (FindFoodByIdResponse);
@@ -39,6 +40,14 @@ message FindUserByEmailRequest {
 
 message FindUserByEmailResponse {
     User user = 1;
+}
+
+message FindUserByIdRequest {
+    int64 id = 1;
+}
+
+message FindUserByIdResponse {
+    User user = 2;
 }
 
 message User {
