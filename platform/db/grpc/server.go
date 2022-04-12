@@ -44,8 +44,9 @@ func (s *server) FindUserByEmail(ctx context.Context, req *proto.FindUserByEmail
 
 	return &proto.FindUserByEmailResponse{
 		User: &proto.User{
-			Id:    u.Id,
-			Email: u.Email,
+			Id:       u.Id,
+			Email:    u.Email,
+			Password: u.Password,
 		},
 	}, nil
 }

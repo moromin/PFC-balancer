@@ -1,51 +1,44 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
-	"net"
+	"os"
+	"os/signal"
 
-	"github.com/moromin/PFC-balancer/services/auth/config"
-	"github.com/moromin/PFC-balancer/services/auth/db"
-	"github.com/moromin/PFC-balancer/services/auth/proto"
-	"github.com/moromin/PFC-balancer/services/auth/server"
-	"github.com/moromin/PFC-balancer/services/auth/utils"
-	"google.golang.org/grpc"
+	"github.com/moromin/PFC-balancer/pkg/logger"
+	"github.com/moromin/PFC-balancer/services/auth/grpc"
 )
 
 func main() {
-	c, err := config.LoadConfig()
+	os.Exit(run(context.Background()))
+}
 
+func run(ctx context.Context) int {
+	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, os.Kill)
+	defer stop()
+
+	l, err := logger.New()
 	if err != nil {
-		log.Fatal("failed at config", err)
+		_, ferr := fmt.Fprintf(os.Stderr, "failed to create logger: %s", err)
+		if ferr != nil {
+			log.Fatalf("failed to write log: %s, original error: %s", err, ferr)
+		}
+		return 1
 	}
 
-	h := db.Init(c.DBUrl)
+	errCh := make(chan error, 1)
+	go func() {
+		errCh <- grpc.RunServer(ctx, 50051, l)
+	}()
 
-	jwt := utils.JwtWrapper{
-		SecretKey:       c.JWTSecretKey,
-		Issuer:          "go-grpc-auth-service",
-		ExpirationHours: 24,
-	}
-
-	lis, err := net.Listen("tcp", c.Port)
-
-	if err != nil {
-		log.Fatal("failed to listening:", err)
-	}
-
-	fmt.Println("Auth service on", c.Port)
-
-	s := server.Server{
-		H:   h,
-		Jwt: jwt,
-	}
-
-	grpcServer := grpc.NewServer()
-
-	proto.RegisterAuthServiceServer(grpcServer, &s)
-
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatal("failed to serve:", err)
+	select {
+	case err := <-errCh:
+		log.Println(err)
+		return 1
+	case <-ctx.Done():
+		log.Println("shutting down...")
+		return 0
 	}
 }
