@@ -5,8 +5,10 @@ import (
 	"errors"
 
 	"github.com/moromin/PFC-balancer/platform/db/db"
+	"github.com/moromin/PFC-balancer/platform/db/models"
 	"github.com/moromin/PFC-balancer/platform/db/proto"
 	food "github.com/moromin/PFC-balancer/services/food/proto"
+	recipe "github.com/moromin/PFC-balancer/services/recipe/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -118,5 +120,89 @@ func (s *server) SearchFoods(ctx context.Context, req *proto.SearchFoodsRequest)
 
 	return &proto.SearchFoodsResponse{
 		FoodList: foodList,
+	}, nil
+}
+
+func (s *server) CreateRecipe(ctx context.Context, req *proto.CreateRecipeRequest) (*proto.CreateRecipeResponse, error) {
+	foodAmounts := make([]*models.FoodAmount, len(req.FoodAmounts))
+	for i, fa := range foodAmounts {
+		foodAmounts[i] = &models.FoodAmount{
+			FoodId: fa.FoodId,
+			Amount: fa.Amount,
+		}
+	}
+
+	id, err := s.db.CreateRecipe(ctx, req.Name, foodAmounts, req.Procedures, req.UserId)
+	if err != nil {
+		if errors.Is(err, db.ErrAlreadyExists) {
+			return nil, status.Error(codes.AlreadyExists, "")
+		} else if errors.Is(err, db.ErrNotFound) {
+			return nil, status.Error(codes.NotFound, "")
+		}
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	return &proto.CreateRecipeResponse{
+		Id: id,
+	}, nil
+}
+
+func (s *server) FindRecipeById(ctx context.Context, req *proto.FindRecipeByIdRequest) (*proto.FindRecipeByIdResponse, error) {
+	r, err := s.db.FindRecipeById(ctx, req.Id)
+	if err != nil {
+		if errors.Is(err, db.ErrNotFound) {
+			return nil, status.Error(codes.NotFound, "")
+		}
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	foodAmounts := make([]*recipe.FoodAmount, len(r.FoodAmounts))
+	for i, fa := range r.FoodAmounts {
+		foodAmounts[i] = &recipe.FoodAmount{
+			FoodId: fa.FoodId,
+			Amount: fa.Amount,
+		}
+	}
+
+	return &proto.FindRecipeByIdResponse{
+		Recipe: &recipe.Recipe{
+			Id:          r.Id,
+			Name:        r.Name,
+			FoodAmounts: foodAmounts,
+			Procedures:  r.Procedures,
+			UserId:      r.UserId,
+		},
+	}, nil
+}
+
+func (s *server) ListRecipes(ctx context.Context, req *proto.ListRecipesRequest) (*proto.ListRecipesResponse, error) {
+	recipes, err := s.db.ListRecipes(ctx)
+	if err != nil {
+		if errors.Is(err, db.ErrNotFound) {
+			return nil, status.Error(codes.NotFound, "")
+		}
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	res := make([]*recipe.Recipe, len(recipes))
+	for i, r := range recipes {
+		foodAmounts := make([]*recipe.FoodAmount, len(r.FoodAmounts))
+		for j, fa := range r.FoodAmounts {
+			foodAmounts[j] = &recipe.FoodAmount{
+				FoodId: fa.FoodId,
+				Amount: fa.Amount,
+			}
+		}
+		res[i] = &recipe.Recipe{
+			Id:          r.Id,
+			Name:        r.Name,
+			FoodAmounts: foodAmounts,
+			Procedures:  r.Procedures,
+			UserId:      r.UserId,
+		}
+	}
+
+	return &proto.ListRecipesResponse{
+		Recipes: res,
 	}, nil
 }
