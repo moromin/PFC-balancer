@@ -1,6 +1,7 @@
 package utils
 
 import (
+	_ "embed"
 	"errors"
 	"time"
 

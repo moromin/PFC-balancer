@@ -8,7 +8,7 @@ import (
 	"os/signal"
 
 	"github.com/moromin/PFC-balancer/pkg/logger"
-	"github.com/moromin/PFC-balancer/services/user/grpc"
+	"github.com/moromin/PFC-balancer/services/auth/grpc"
 )
 
 func main() {
