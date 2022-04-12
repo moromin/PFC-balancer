@@ -5,18 +5,26 @@ package db;
 option go_package = "./proto";
 
 import "services/food/proto/food.proto";
+import "services/recipe/proto/recipe.proto";
 
 service DBService {
     // user
     rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
     rpc FindUserByEmail(FindUserByEmailRequest) returns (FindUserByEmailResponse);
+    rpc FindUserById(FindUserByIdRequest) returns (FindUserByIdResponse);
 
     // food
     rpc FindFoodById(FindFoodByIdRequest) returns (FindFoodByIdResponse);
     rpc ListFoods(ListFoodsRequest) returns (ListFoodsResponse);
     rpc SearchFoods(SearchFoodsRequest) returns (SearchFoodsResponse);
+
+    // recipe
+    rpc CreateRecipe(CreateRecipeRequest) returns (CreateRecipeResponse);
+    rpc FindRecipeById(FindRecipeByIdRequest) returns (FindRecipeByIdResponse);
+    rpc ListRecipes(ListRecipesRequest) returns (ListRecipesResponse);
 }
 
+// user
 message CreateUserRequest {
     string email = 1;
     string password = 2;
@@ -34,12 +42,21 @@ message FindUserByEmailResponse {
     User user = 1;
 }
 
+message FindUserByIdRequest {
+    int64 id = 1;
+}
+
+message FindUserByIdResponse {
+    User user = 1;
+}
+
 message User {
     int64 id = 1;
     string email = 2;
     string password = 3;
 }
 
+// food
 message FindFoodByIdRequest {
     int64 id = 1;
 }
@@ -60,4 +77,38 @@ message SearchFoodsRequest {
 
 message SearchFoodsResponse {
     repeated food.Food food_list = 1;
+}
+
+// recipe
+message Recipe {
+    int64 id = 1;
+    string name = 2;
+    repeated recipe.FoodAmount food_amounts = 3;
+    repeated string procedures = 4;
+    int64 user_id = 5;
+}
+
+message CreateRecipeRequest {
+    string name = 1;
+    repeated recipe.FoodAmount food_amounts = 2;
+    repeated string procedures = 3;
+    int64 user_id = 4;
+}
+
+message CreateRecipeResponse {
+    int64 id = 1;
+}
+
+message FindRecipeByIdRequest {
+    int64 id = 1;
+}
+
+message FindRecipeByIdResponse {
+    Recipe recipe = 1;
+}
+
+message ListRecipesRequest {}
+
+message ListRecipesResponse {
+    repeated Recipe recipes = 1;
 }

@@ -1,42 +1,44 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
-	"net"
+	"os"
+	"os/signal"
 
-	"github.com/moromin/PFC-balancer/services/recipe/config"
-	"github.com/moromin/PFC-balancer/services/recipe/db"
-	"github.com/moromin/PFC-balancer/services/recipe/proto"
-	"github.com/moromin/PFC-balancer/services/recipe/server"
-	"google.golang.org/grpc"
+	"github.com/moromin/PFC-balancer/pkg/logger"
+	"github.com/moromin/PFC-balancer/services/recipe/grpc"
 )
 
 func main() {
-	c, err := config.LoadConfig()
+	os.Exit(run(context.Background()))
+}
+
+func run(ctx context.Context) int {
+	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, os.Kill)
+	defer stop()
+
+	l, err := logger.New()
 	if err != nil {
-		log.Fatal("Failed at config", err)
+		_, ferr := fmt.Fprintf(os.Stderr, "failed to create logger: %s", err)
+		if ferr != nil {
+			log.Fatalf("failed to write log: %s, original error: %s", err, ferr)
+		}
+		return 1
 	}
 
-	h := db.Init(c.DBUrl)
+	errCh := make(chan error, 1)
+	go func() {
+		errCh <- grpc.RunServer(ctx, 50054, l)
+	}()
 
-	lis, err := net.Listen("tcp", c.Port)
-
-	if err != nil {
-		log.Fatal("Failed to listening:", err)
-	}
-
-	fmt.Println("Recipe Service on", c.Port)
-
-	s := server.Server{
-		H: h,
-	}
-
-	grpcServer := grpc.NewServer()
-
-	proto.RegisterRecipeServiceServer(grpcServer, &s)
-
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatal("Failed to serve:", err)
+	select {
+	case err := <-errCh:
+		log.Println(err)
+		return 1
+	case <-ctx.Done():
+		log.Println("shutting down...")
+		return 0
 	}
 }

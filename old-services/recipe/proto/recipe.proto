@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package food;
+
+option go_package = "./proto";
+
+service RecipeService {
+    rpc CreateRecipe(CreateRecipeRequest) returns (CreateRecipeResponse) {}
+    rpc ReadRecipe(ReadRecipeRequest) returns (ReadRecipeResponse) {}
+    // rpc UpdateRecipe(UpdateRecipeRequest) returns (UpdateReciperesponse) {}
+    // rpc DeleteRecipe(DeleteRecipeRequest) returns (DeleteRecipeResponse) {}
+}
+
+// Common
+message FoodAmount {
+    int64 food_id = 1;
+    double amount = 2;
+}
+
+message RecipeData {
+    string name = 1;
+    repeated FoodAmount food_amount = 2;
+    repeated string procedure_list = 3;
+}
+
+// CreateRecipe
+message CreateRecipeRequest {
+    RecipeData data = 1;
+    int64 user_id = 2;
+}
+
+message CreateRecipeResponse {
+    int64 id = 1;
+}
+
+// ReadRecipe
+message ReadRecipeRequest {
+    int64 id = 1;
+    int64 user_id = 2;
+}
+
+message ReadRecipeResponse {
+    RecipeData data = 1;
+}
+
+// rpc UpdateRecipe(UpdateRecipeRequest) returns (UpdateReciperesponse) {}
+// rpc DeleteRecipe(DeleteRecipeRequest) returns (DeleteRecipeResponse) {}

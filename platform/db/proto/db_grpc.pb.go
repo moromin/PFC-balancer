@@ -25,10 +25,15 @@ type DBServiceClient interface {
 	// user
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 	FindUserByEmail(ctx context.Context, in *FindUserByEmailRequest, opts ...grpc.CallOption) (*FindUserByEmailResponse, error)
+	FindUserById(ctx context.Context, in *FindUserByIdRequest, opts ...grpc.CallOption) (*FindUserByIdResponse, error)
 	// food
 	FindFoodById(ctx context.Context, in *FindFoodByIdRequest, opts ...grpc.CallOption) (*FindFoodByIdResponse, error)
 	ListFoods(ctx context.Context, in *ListFoodsRequest, opts ...grpc.CallOption) (*ListFoodsResponse, error)
 	SearchFoods(ctx context.Context, in *SearchFoodsRequest, opts ...grpc.CallOption) (*SearchFoodsResponse, error)
+	// recipe
+	CreateRecipe(ctx context.Context, in *CreateRecipeRequest, opts ...grpc.CallOption) (*CreateRecipeResponse, error)
+	FindRecipeById(ctx context.Context, in *FindRecipeByIdRequest, opts ...grpc.CallOption) (*FindRecipeByIdResponse, error)
+	ListRecipes(ctx context.Context, in *ListRecipesRequest, opts ...grpc.CallOption) (*ListRecipesResponse, error)
 }
 
 type dBServiceClient struct {
@@ -51,6 +56,15 @@ func (c *dBServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest,
 func (c *dBServiceClient) FindUserByEmail(ctx context.Context, in *FindUserByEmailRequest, opts ...grpc.CallOption) (*FindUserByEmailResponse, error) {
 	out := new(FindUserByEmailResponse)
 	err := c.cc.Invoke(ctx, "/db.DBService/FindUserByEmail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBServiceClient) FindUserById(ctx context.Context, in *FindUserByIdRequest, opts ...grpc.CallOption) (*FindUserByIdResponse, error) {
+	out := new(FindUserByIdResponse)
+	err := c.cc.Invoke(ctx, "/db.DBService/FindUserById", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -84,6 +98,33 @@ func (c *dBServiceClient) SearchFoods(ctx context.Context, in *SearchFoodsReques
 	return out, nil
 }
 
+func (c *dBServiceClient) CreateRecipe(ctx context.Context, in *CreateRecipeRequest, opts ...grpc.CallOption) (*CreateRecipeResponse, error) {
+	out := new(CreateRecipeResponse)
+	err := c.cc.Invoke(ctx, "/db.DBService/CreateRecipe", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBServiceClient) FindRecipeById(ctx context.Context, in *FindRecipeByIdRequest, opts ...grpc.CallOption) (*FindRecipeByIdResponse, error) {
+	out := new(FindRecipeByIdResponse)
+	err := c.cc.Invoke(ctx, "/db.DBService/FindRecipeById", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBServiceClient) ListRecipes(ctx context.Context, in *ListRecipesRequest, opts ...grpc.CallOption) (*ListRecipesResponse, error) {
+	out := new(ListRecipesResponse)
+	err := c.cc.Invoke(ctx, "/db.DBService/ListRecipes", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DBServiceServer is the server API for DBService service.
 // All implementations should embed UnimplementedDBServiceServer
 // for forward compatibility
@@ -91,10 +132,15 @@ type DBServiceServer interface {
 	// user
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	FindUserByEmail(context.Context, *FindUserByEmailRequest) (*FindUserByEmailResponse, error)
+	FindUserById(context.Context, *FindUserByIdRequest) (*FindUserByIdResponse, error)
 	// food
 	FindFoodById(context.Context, *FindFoodByIdRequest) (*FindFoodByIdResponse, error)
 	ListFoods(context.Context, *ListFoodsRequest) (*ListFoodsResponse, error)
 	SearchFoods(context.Context, *SearchFoodsRequest) (*SearchFoodsResponse, error)
+	// recipe
+	CreateRecipe(context.Context, *CreateRecipeRequest) (*CreateRecipeResponse, error)
+	FindRecipeById(context.Context, *FindRecipeByIdRequest) (*FindRecipeByIdResponse, error)
+	ListRecipes(context.Context, *ListRecipesRequest) (*ListRecipesResponse, error)
 }
 
 // UnimplementedDBServiceServer should be embedded to have forward compatible implementations.
@@ -107,6 +153,9 @@ func (UnimplementedDBServiceServer) CreateUser(context.Context, *CreateUserReque
 func (UnimplementedDBServiceServer) FindUserByEmail(context.Context, *FindUserByEmailRequest) (*FindUserByEmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindUserByEmail not implemented")
 }
+func (UnimplementedDBServiceServer) FindUserById(context.Context, *FindUserByIdRequest) (*FindUserByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindUserById not implemented")
+}
 func (UnimplementedDBServiceServer) FindFoodById(context.Context, *FindFoodByIdRequest) (*FindFoodByIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindFoodById not implemented")
 }
@@ -115,6 +164,15 @@ func (UnimplementedDBServiceServer) ListFoods(context.Context, *ListFoodsRequest
 }
 func (UnimplementedDBServiceServer) SearchFoods(context.Context, *SearchFoodsRequest) (*SearchFoodsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchFoods not implemented")
+}
+func (UnimplementedDBServiceServer) CreateRecipe(context.Context, *CreateRecipeRequest) (*CreateRecipeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateRecipe not implemented")
+}
+func (UnimplementedDBServiceServer) FindRecipeById(context.Context, *FindRecipeByIdRequest) (*FindRecipeByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindRecipeById not implemented")
+}
+func (UnimplementedDBServiceServer) ListRecipes(context.Context, *ListRecipesRequest) (*ListRecipesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListRecipes not implemented")
 }
 
 // UnsafeDBServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -160,6 +218,24 @@ func _DBService_FindUserByEmail_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DBServiceServer).FindUserByEmail(ctx, req.(*FindUserByEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBService_FindUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindUserByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBServiceServer).FindUserById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBService/FindUserById",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBServiceServer).FindUserById(ctx, req.(*FindUserByIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -218,6 +294,60 @@ func _DBService_SearchFoods_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DBService_CreateRecipe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateRecipeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBServiceServer).CreateRecipe(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBService/CreateRecipe",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBServiceServer).CreateRecipe(ctx, req.(*CreateRecipeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBService_FindRecipeById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindRecipeByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBServiceServer).FindRecipeById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBService/FindRecipeById",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBServiceServer).FindRecipeById(ctx, req.(*FindRecipeByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBService_ListRecipes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRecipesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBServiceServer).ListRecipes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBService/ListRecipes",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBServiceServer).ListRecipes(ctx, req.(*ListRecipesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DBService_ServiceDesc is the grpc.ServiceDesc for DBService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -234,6 +364,10 @@ var DBService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DBService_FindUserByEmail_Handler,
 		},
 		{
+			MethodName: "FindUserById",
+			Handler:    _DBService_FindUserById_Handler,
+		},
+		{
 			MethodName: "FindFoodById",
 			Handler:    _DBService_FindFoodById_Handler,
 		},
@@ -244,6 +378,18 @@ var DBService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchFoods",
 			Handler:    _DBService_SearchFoods_Handler,
+		},
+		{
+			MethodName: "CreateRecipe",
+			Handler:    _DBService_CreateRecipe_Handler,
+		},
+		{
+			MethodName: "FindRecipeById",
+			Handler:    _DBService_FindRecipeById_Handler,
+		},
+		{
+			MethodName: "ListRecipes",
+			Handler:    _DBService_ListRecipes_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
