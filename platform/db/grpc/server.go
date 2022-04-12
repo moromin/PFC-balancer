@@ -63,7 +63,7 @@ func (s *server) FindFoodById(ctx context.Context, req *proto.FindFoodByIdReques
 
 	return &proto.FindFoodByIdResponse{
 		Food: &food.Food{
-			Id:           f.Category,
+			Id:           f.Id,
 			Name:         f.Name,
 			Protein:      f.Protein,
 			Fat:          f.Fat,

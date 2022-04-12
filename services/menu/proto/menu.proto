@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package menu;
+
+option go_package = "github.com/moromin/PFC-balancer/services/menu/proto";
+
+import "google/api/annotations.proto";
+
+service MenuService {
+    // TODO: recipe service
+
+    // food
+    rpc FindFoodById(FindFoodByIdRequest) returns (FindFoodByIdResponse) {
+        option (google.api.http) = {
+            get: "/menu/foods/{id}"
+        };
+    }
+    rpc ListFoods(ListFoodsRequest) returns (ListFoodsResponse) {
+        option (google.api.http) = {
+            get: "/menu/foods"
+        };
+    }
+    rpc SearchFoods(SearchFoodsRequest) returns (SearchFoodsResponse) {
+        option (google.api.http) = {
+            get: "/menu/foods/search/{name}"
+        };
+    }
+}
+
+message Food {
+    int64 id = 1;
+    string name = 2;
+    double protein = 3;
+    double fat = 4;
+    double carbohydrate = 5;
+    int64 category = 6;
+}
+
+message FindFoodByIdRequest {
+    int64 id = 1;
+}
+
+message FindFoodByIdResponse {
+    Food food = 1;
+}
+
+message ListFoodsRequest {}
+
+message ListFoodsResponse {
+    repeated Food food_list = 1;
+}
+
+message SearchFoodsRequest {
+    string name = 1;
+}
+
+message SearchFoodsResponse {
+    repeated Food food_list = 1;
+}
