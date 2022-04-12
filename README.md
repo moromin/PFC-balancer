@@ -10,6 +10,16 @@ graph LR;
     E --> F(food)
     C --> F
 ```
+
+## Get started
+``` bash
+# start up postgres
+docker compose up -d
+
+# run each services
+make
+```
+
 ## Microservices
 ### Gateway
 - Port: `localhost:4000`
