@@ -1,26 +1,44 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"log"
+	"os"
+	"os/signal"
 
-	"github.com/gin-gonic/gin"
-	"github.com/moromin/PFC-balancer/services/gateway/config"
-	"github.com/moromin/PFC-balancer/services/gateway/pkg/auth"
-	"github.com/moromin/PFC-balancer/services/gateway/pkg/food"
-	"github.com/moromin/PFC-balancer/services/gateway/pkg/recipe"
+	"github.com/moromin/PFC-balancer/pkg/logger"
+	"github.com/moromin/PFC-balancer/services/gateway/rest"
 )
 
 func main() {
-	c, err := config.LoadConfig()
+	os.Exit(run(context.Background()))
+}
+
+func run(ctx context.Context) int {
+	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, os.Kill)
+	defer stop()
+
+	l, err := logger.New()
 	if err != nil {
-		log.Fatal("Failed at config")
+		_, ferr := fmt.Fprintf(os.Stderr, "failed to create logger: %s", err)
+		if ferr != nil {
+			log.Fatalf("failed to write log: %s, original error: %s", err, ferr)
+		}
+		return 1
 	}
 
-	r := gin.Default()
+	errCh := make(chan error, 1)
+	go func() {
+		errCh <- rest.RunServer(ctx, 4000, l)
+	}()
 
-	authSvc := *auth.RegisterRoutes(r, &c)
-	food.RegisterRoutes(r, &c, &authSvc)
-	recipe.RegisterRoutes(r, &c, &authSvc)
-
-	r.Run(c.Port)
+	select {
+	case err := <-errCh:
+		log.Println(err)
+		return 1
+	case <-ctx.Done():
+		log.Println("shutting down...")
+		return 0
+	}
 }

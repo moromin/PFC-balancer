@@ -45,13 +45,13 @@ func (s *server) Login(ctx context.Context, req *proto.LoginRequest) (*proto.Log
 	if err != nil {
 		st, ok := status.FromError(err)
 		if ok && st.Code() == codes.NotFound {
-			return nil, status.Errorf(codes.NotFound, "%s not found", req.Email)
+			return nil, status.Error(codes.NotFound, "not found")
 		}
-		return nil, status.Errorf(codes.Internal, "internal error")
+		return nil, status.Error(codes.Internal, "internal error")
 	}
 
 	if match := utils.CheckPasswordHash(req.Password, res.Password); !match {
-		return nil, status.Errorf(codes.NotFound, "%s not found", req.Email)
+		return nil, status.Error(codes.NotFound, "not found")
 	}
 
 	user := res.GetUser()
