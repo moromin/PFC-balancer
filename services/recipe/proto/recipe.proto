@@ -5,11 +5,26 @@ package recipe;
 option go_package = "github.com/moromin/PFC-balancer/services/recipe/proto";
 
 import "services/food/proto/food.proto";
+import "google/api/annotations.proto";
 
 service RecipeService {
-    rpc CreateRecipe(CreateRecipeRequest) returns (CreateRecipeResponse);
-    rpc FindRecipeById(FindRecipeByIdRequest) returns (FindRecipeByIdResponse);
-    rpc ListRecipes(ListRecipesRequest) returns (ListRecipesResponse);
+    rpc CreateRecipe(CreateRecipeRequest) returns (CreateRecipeResponse) {
+        option (google.api.http) = {
+            post: "/recipes"
+            body: "*"
+        };
+    }
+    rpc FindRecipeById(FindRecipeByIdRequest) returns (FindRecipeByIdResponse)
+    {
+        option (google.api.http) = {
+            get: "/recipes/{id}"
+        };
+    }
+    rpc ListRecipes(ListRecipesRequest) returns (ListRecipesResponse){
+        option (google.api.http) = {
+            get: "/recipes"
+        };
+    }
 }
 
 message FoodAmount {

@@ -8,7 +8,8 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	auth "github.com/moromin/PFC-balancer/services/auth/proto"
-	menu "github.com/moromin/PFC-balancer/services/menu/proto"
+	food "github.com/moromin/PFC-balancer/services/food/proto"
+	recipe "github.com/moromin/PFC-balancer/services/recipe/proto"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
@@ -34,12 +35,20 @@ func RunServer(ctx context.Context, port int, l *zap.Logger) error {
 		return fmt.Errorf("failed to regiter auth client: %w", err)
 	}
 
-	menuConn, err := grpc.DialContext(ctx, "localhost:50053", opts...)
+	foodConn, err := grpc.DialContext(ctx, "localhost:50055", opts...)
 	if err != nil {
-		return fmt.Errorf("failed to dial to menu server: %w", err)
+		return fmt.Errorf("failed to dial to food server: %w", err)
 	}
-	if err := menu.RegisterMenuServiceHandlerClient(ctx, mux, menu.NewMenuServiceClient(menuConn)); err != nil {
-		return fmt.Errorf("failed to regiter menu client: %w", err)
+	if err := food.RegisterFoodServiceHandlerClient(ctx, mux, food.NewFoodServiceClient(foodConn)); err != nil {
+		return fmt.Errorf("failed to regiter food client: %w", err)
+	}
+
+	recipeConn, err := grpc.DialContext(ctx, "localhost:50054", opts...)
+	if err != nil {
+		return fmt.Errorf("failed to dial to recipe server: %w", err)
+	}
+	if err := recipe.RegisterRecipeServiceHandlerClient(ctx, mux, recipe.NewRecipeServiceClient(recipeConn)); err != nil {
+		return fmt.Errorf("failed to regiter recipe client: %w", err)
 	}
 
 	errCh := make(chan error, 1)

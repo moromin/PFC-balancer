@@ -6,12 +6,12 @@ This service was created with reference to [mercari-microservices-example](https
 ```mermaid
 graph LR;
     A(gateway) --> B(auth)
-    A --> C(menu)
-    B --> D(user)
-    C --> E(recipe)
-    E --> D
-    E --> F(food)
-    C --> F
+    B --> C(user)
+    A --> D(recipe)
+    D --> B
+    D --> C
+    D --> E(food)
+    A --> E
 ```
 
 ## Get started
@@ -30,8 +30,6 @@ make
 - Port: `localhost:50051`
 ### Users
 - Port: `localhost:50052`
-### Menu
-- Port: `localhost:50053`
 ### Recipe
 - Port: `localhost:50054`
 ### Food
@@ -41,13 +39,23 @@ make
 
 ## Endpoints
 Specify the following path followed by `localhost:4000`
-| Service | Method | Endpoint       |
-|---------|--------|----------------|
-| Resister  | `POST` | `/auth/register/` |
-| Login  | `POST` | `/auth/login/` |
-| Find food by ID | `GET` | `/menu/foods/{id}` |
-| List all foods  | `GET` | `/menu/foods` |
-| Search foods  | `GET` | `/menu/foods/search/{name}` |
+### Auth
+| Service | Method | Endpoint       | Auth |
+|---------|--------|----------------|------|
+| Resister  | `POST` | `/auth/register/` | × |
+| Login  | `POST` | `/auth/login/` | × |
+### Food
+| Service | Method | Endpoint       | Auth |
+|---------|--------|----------------|------|
+| List all foods  | `GET` | `/foods` | × |
+| Find food by ID | `GET` | `/foods/{id}` | × |
+| Search foods  | `GET` | `/foods/search/{name}` | × |
+### Recipe
+| Service | Method | Endpoint       | Auth |
+|---------|--------|----------------|------|
+| Create new recipe  | `POST` | `/recipes` | ✔︎ |
+| List all recipes  | `GET` | `/recipes` | × |
+| Find recipe by ID  | `GET` | `/recipes/{id}` | × |
 
 ## Reference
 - [grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway)

@@ -4,10 +4,24 @@ package food;
 
 option go_package = "github.com/moromin/PFC-balancer/services/food/proto";
 
+import "google/api/annotations.proto";
+
 service FoodService {
-    rpc FindFoodById(FindFoodByIdRequest) returns (FindFoodByIdResponse) {}
-    rpc ListFoods(ListFoodsRequest) returns (ListFoodsResponse) {}
-    rpc SearchFoods(SearchFoodsRequest) returns (SearchFoodsResponse) {}
+    rpc FindFoodById(FindFoodByIdRequest) returns (FindFoodByIdResponse) {
+        option (google.api.http) = {
+            get: "/foods/{id}"
+        };
+    }
+    rpc ListFoods(ListFoodsRequest) returns (ListFoodsResponse) {
+        option (google.api.http) = {
+            get: "/foods"
+        };
+    }
+    rpc SearchFoods(SearchFoodsRequest) returns (SearchFoodsResponse) {
+        option (google.api.http) = {
+            get: "/foods/search/{name}"
+        };
+    }
 }
 
 message Food {
@@ -19,7 +33,6 @@ message Food {
     int64 category = 6;
 }
 
-// FindById
 message FindFoodByIdRequest {
     int64 id = 1;
 }
@@ -28,14 +41,12 @@ message FindFoodByIdResponse {
     Food food = 1;
 }
 
-// ListFoods
 message ListFoodsRequest {}
 
 message ListFoodsResponse {
     repeated Food food_list = 1;
 }
 
-// SearchFoods
 message SearchFoodsRequest {
     string name = 1;
 }
