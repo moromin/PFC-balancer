@@ -153,7 +153,7 @@ func (s *server) Authenticate(ctx context.Context) (context.Context, error) {
 }
 
 func (s *server) AuthFuncOverride(ctx context.Context, fullMethodName string) (context.Context, error) {
-	if fullMethodName != "/proto.RecipeService/CreateRecipe" {
+	if fullMethodName != "/recipe.RecipeService/CreateRecipe" {
 		return ctx, nil
 	}
 
