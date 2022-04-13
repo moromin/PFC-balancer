@@ -18,7 +18,7 @@ type Server struct {
 	port   int
 }
 
-func NewServer(port int, register func(*grpc.Server)) *Server {
+func NewServer(port int, register func(*grpc.Server), iss ...grpc.UnaryServerInterceptor) *Server {
 	zl, _ := zap.NewProduction()
 	logger.ReplaceGrpcLogger(zl)
 
@@ -26,6 +26,7 @@ func NewServer(port int, register func(*grpc.Server)) *Server {
 		ctxtags.UnaryServerInterceptor(ctxtags.WithFieldExtractor(ctxtags.CodeGenRequestFieldExtractor)),
 		logger.UnaryServerInterceptor(zl),
 	}
+	intersections = append(intersections, iss...)
 
 	opts := []grpc.ServerOption{
 		middleware.WithUnaryServerChain(intersections...),
