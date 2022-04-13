@@ -3,7 +3,9 @@ package grpc
 import (
 	"context"
 
+	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	db "github.com/moromin/PFC-balancer/platform/db/proto"
+	auth "github.com/moromin/PFC-balancer/services/auth/proto"
 	food "github.com/moromin/PFC-balancer/services/food/proto"
 	"github.com/moromin/PFC-balancer/services/recipe/proto"
 	user "github.com/moromin/PFC-balancer/services/user/proto"
@@ -13,18 +15,30 @@ import (
 
 var _ proto.RecipeServiceServer = (*server)(nil)
 
+type ctxKey string
+
+const (
+	userId ctxKey = "userId"
+)
+
 type server struct {
 	dbClient   db.DBServiceClient
 	userClient user.UserServiceClient
 	foodClient food.FoodServiceClient
+	authClient auth.AuthServiceClient
 }
 
 func (s *server) CreateRecipe(ctx context.Context, req *proto.CreateRecipeRequest) (*proto.CreateRecipeResponse, error) {
+	userId, ok := ctx.Value(userId).(int64)
+	if !ok {
+		return nil, status.Error(codes.Internal, "failed to get value from ctx")
+	}
+
 	res, err := s.dbClient.CreateRecipe(ctx, &db.CreateRecipeRequest{
 		Name:        req.Name,
 		FoodAmounts: req.FoodAmounts,
 		Procedures:  req.Procedures,
-		UserId:      req.UserId,
+		UserId:      userId,
 	})
 	if err != nil {
 		st, ok := status.FromError(err)
@@ -119,4 +133,34 @@ func (s *server) ListRecipes(ctx context.Context, req *proto.ListRecipesRequest)
 	return &proto.ListRecipesResponse{
 		Recipes: recipes,
 	}, nil
+}
+
+func (s *server) Authenticate(ctx context.Context) (context.Context, error) {
+	token, err := grpc_auth.AuthFromMD(ctx, "bearer")
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := s.authClient.Validate(ctx, &auth.ValidateRequest{
+		Token: token,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	newCtx := context.WithValue(ctx, userId, res.UserId)
+	return newCtx, nil
+}
+
+func (s *server) AuthFuncOverride(ctx context.Context, fullMethodName string) (context.Context, error) {
+	if fullMethodName != "/recipe.RecipeService/CreateRecipe" {
+		return ctx, nil
+	}
+
+	ctx, err := s.Authenticate(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return ctx, nil
 }
