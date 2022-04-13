@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 
+	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	pkggrpc "github.com/moromin/PFC-balancer/pkg/grpc"
 	db "github.com/moromin/PFC-balancer/platform/db/proto"
 	food "github.com/moromin/PFC-balancer/services/food/proto"
@@ -44,5 +45,5 @@ func RunServer(ctx context.Context, port int, l *zap.Logger) error {
 
 	return pkggrpc.NewServer(port, func(s *grpc.Server) {
 		proto.RegisterRecipeServiceServer(s, svc)
-	}).Start(ctx)
+	}, grpc_auth.UnaryServerInterceptor(svc.Authenticate)).Start(ctx)
 }

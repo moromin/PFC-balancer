@@ -49,7 +49,6 @@ message CreateRecipeRequest {
     string name = 1;
     repeated FoodAmount food_amounts = 2;
     repeated string procedures = 3;
-    int64 user_id = 4;
 }
 
 message CreateRecipeResponse {
