@@ -9,7 +9,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// check implementation server methods
 var _ proto.UserServiceServer = (*server)(nil)
 
 type server struct {
