@@ -20,6 +20,7 @@ service AuthService {
             body: "*"
         };
     }
+    rpc Validate(ValidateRequest) returns (ValidateResponse);
 }
 
 message RegisterRequest {
@@ -38,4 +39,12 @@ message LoginRequest {
 
 message LoginResponse {
     string token = 1;
+}
+
+message ValidateRequest {
+    string token = 1;
+}
+
+message ValidateResponse {
+    int64 user_id = 1;
 }

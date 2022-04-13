@@ -67,3 +67,21 @@ func (s *server) Login(ctx context.Context, req *proto.LoginRequest) (*proto.Log
 		Token: token,
 	}, nil
 }
+
+func (s *server) Validate(ctx context.Context, req *proto.ValidateRequest) (*proto.ValidateResponse, error) {
+	claims, err := s.jwt.ValidateToken(req.Token)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "failed to validate token")
+	}
+
+	u, err := s.userClient.FindUserById(ctx, &user.FindUserByIdRequest{
+		Id: claims.Id,
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, "failed to find user by ID")
+	}
+
+	return &proto.ValidateResponse{
+		UserId: u.User.Id,
+	}, nil
+}
