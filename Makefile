@@ -16,7 +16,11 @@ PROTOC_GATEWAY = protoc -I . \
 
 # TODO: run all services rule
 all:
-
+	make db
+	make user
+	make auth
+	make food
+	docker compose up
 
 gen-protoc:
 # cd ${MAKE_PATH} && $(PROTOC_GRPC)
@@ -26,21 +30,21 @@ gen-gateway:
 	$(PROTOC_GATEWAY)
 
 db:
-	cd platform/db && go run main.go
+	docker build -t moromin/pfc-balancer/db:latest --file platform/db/Dockerfile .
+
+user:
+	docker build -t moromin/pfc-balancer/user:latest --file services/user/Dockerfile .
 
 gateway:
 	cd services/gateway && go run main.go
 
 auth:
-	cd services/auth && go run main.go
-
-user:
-	cd services/user && go run main.go
+	docker build -t moromin/pfc-balancer/auth:latest --file services/auth/Dockerfile .
 
 menu:
 	cd services/menu && go run main.go
 
 food:
-	cd services/food && go run main.go
+	docker build -t moromin/pfc-balancer/food:latest --file services/food/Dockerfile .
 
 .PHONY: gen-gateway gen-protoc
