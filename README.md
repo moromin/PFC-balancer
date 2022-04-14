@@ -17,32 +17,30 @@ graph LR;
 
 ## Microservices
 ### Gateway
-- Port: `localhost:4000`
+- Port: `4000`
 - This is the only microservice which is facing the out side of the services and acts as just a proxy.
 ### Auth
-- Port: `localhost:50051`
+- Port: `50051`
 - This microservice is responsible for issuing the access token (JWT) for the user.
 - This microservice also provides the ability to validate the Auth information contained in the request.
-### Users
-- Port: `localhost:50052`
+### User
+- Port: `50052`
 - This microservice is responsible for storing the user information to the database and providing it as APIs.
 ### Recipe
-- Port: `localhost:50054`
+- Port: `50053`
 - This microservice is responsible for storing the recipe information to the database and providing it as APIs.
 ### Food
-- Port: `localhost:50055`
+- Port: `50054`
 - This microservice is responsible for providing food information from database as APIs.
 ### DB
-- Port: `localhost:5000`
+- Port: `50000`
 - This microservice is responsible for storing the user, recipe and food information.
 
 ## Get started
 ``` bash
-# start up postgres
-docker compose up -d
-
-# run each services
-make
+# Build each service Docker images and
+# run containers based on these.
+$ make
 ```
 
 ## Endpoints
