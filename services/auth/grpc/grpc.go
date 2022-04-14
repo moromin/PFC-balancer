@@ -11,13 +11,18 @@ import (
 	"google.golang.org/grpc"
 )
 
-func RunServer(ctx context.Context, port int, l *zap.Logger) error {
+type ServerConfig struct {
+	Port     int
+	UserAddr string
+}
+
+func RunServer(ctx context.Context, cfg *ServerConfig, l *zap.Logger) error {
 	opts := []grpc.DialOption{
 		grpc.WithInsecure(),
 		grpc.WithBlock(),
 	}
 
-	conn, err := grpc.DialContext(ctx, "localhost:50052", opts...)
+	conn, err := grpc.DialContext(ctx, cfg.UserAddr, opts...)
 	if err != nil {
 		return err
 	}
@@ -33,7 +38,7 @@ func RunServer(ctx context.Context, port int, l *zap.Logger) error {
 		jwt:        jwt,
 	}
 
-	return pkggrpc.NewServer(port, func(s *grpc.Server) {
+	return pkggrpc.NewServer(cfg.Port, func(s *grpc.Server) {
 		proto.RegisterAuthServiceServer(s, svc)
 	}).Start(ctx)
 }

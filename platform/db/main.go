@@ -2,15 +2,17 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"os"
 	"os/signal"
 
-	_ "github.com/lib/pq"
 	"github.com/moromin/PFC-balancer/pkg/logger"
 	"github.com/moromin/PFC-balancer/platform/db/grpc"
 )
+
+var port = flag.Int("p", 4000, "gRPC server network port")
 
 func main() {
 	os.Exit(run(context.Background()))
@@ -29,9 +31,11 @@ func run(ctx context.Context) int {
 		return 1
 	}
 
+	flag.Parse()
+
 	errCh := make(chan error, 1)
 	go func() {
-		errCh <- grpc.RunServer(ctx, 5000, l)
+		errCh <- grpc.RunServer(ctx, *port, l)
 	}()
 
 	select {

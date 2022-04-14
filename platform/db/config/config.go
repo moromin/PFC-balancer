@@ -2,10 +2,7 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -17,11 +14,6 @@ type Config struct {
 }
 
 func LoadConfig() (config Config) {
-	// TODO: delete this and dev.env and replace Dockerfile
-	if err := godotenv.Load("config/dev.env"); err != nil {
-		log.Fatal(err)
-	}
-
 	config = Config{
 		User:     os.Getenv("POSTGRES_USER"),
 		Password: os.Getenv("POSTGRES_PASSWORD"),

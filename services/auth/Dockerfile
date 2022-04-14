@@ -7,7 +7,6 @@ COPY go.sum go.sum
 RUN go mod download
 
 COPY . .
-RUN go build -o /usr/bin/db ./platform/db
+RUN go build -o /usr/bin/auth ./services/auth
 
-# CMD ["/usr/bin/db", "-p", "4000"]
-ENTRYPOINT ["/usr/bin/db"]
+ENTRYPOINT ["/usr/bin/auth"]
