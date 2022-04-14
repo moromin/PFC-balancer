@@ -23,9 +23,30 @@ services:
       POSTGRES_PORT: 5432
       POSTGRES_DB: pfc-balancer
     ports:
-      - 50000:4000
-    depends_on:
-      - postgres
+      - 50050:4000
+    command:
+      - "-p"
+      - "4000"
+
+  user:
+    image: docker.io/moromin/pfc-balancer/user
+    ports:
+      - 50052:4000
+    command:
+      - "-p"
+      - "4000"
+      - "-dbAddr"
+      - "db:4000"
+
+  auth:
+    image: docker.io/moromin/pfc-balancer/auth
+    ports:
+      - 50051:4000
+    command:
+      - "-p"
+      - "4000"
+      - "-userAddr"
+      - "user:4000"
 
 volumes:
   db_volume:
