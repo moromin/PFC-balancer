@@ -10,13 +10,18 @@ import (
 	"google.golang.org/grpc"
 )
 
-func RunServer(ctx context.Context, port int, l *zap.Logger) error {
+type ServerConfig struct {
+	Port   int
+	DBAddr string
+}
+
+func RunServer(ctx context.Context, cfg *ServerConfig, l *zap.Logger) error {
 	opts := []grpc.DialOption{
 		grpc.WithInsecure(),
 		grpc.WithBlock(),
 	}
 
-	conn, err := grpc.DialContext(ctx, "localhost:5000", opts...)
+	conn, err := grpc.DialContext(ctx, cfg.DBAddr, opts...)
 	if err != nil {
 		return err
 	}
@@ -27,7 +32,7 @@ func RunServer(ctx context.Context, port int, l *zap.Logger) error {
 		dbClient: dbClient,
 	}
 
-	return pkggrpc.NewServer(port, func(s *grpc.Server) {
+	return pkggrpc.NewServer(cfg.Port, func(s *grpc.Server) {
 		proto.RegisterUserServiceServer(s, svc)
 	}).Start(ctx)
 }

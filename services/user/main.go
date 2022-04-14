@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -11,11 +12,16 @@ import (
 	"github.com/moromin/PFC-balancer/services/user/grpc"
 )
 
+var port = flag.Int("p", 4000, "gRPC server network port")
+var dbAddr = flag.String("dbAddr", "localhost:50000", "DB service address")
+
 func main() {
 	os.Exit(run(context.Background()))
 }
 
 func run(ctx context.Context) int {
+	flag.Parse()
+
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, os.Kill)
 	defer stop()
 
@@ -28,9 +34,14 @@ func run(ctx context.Context) int {
 		return 1
 	}
 
+	cfg := &grpc.ServerConfig{
+		Port:   *port,
+		DBAddr: *dbAddr,
+	}
+
 	errCh := make(chan error, 1)
 	go func() {
-		errCh <- grpc.RunServer(ctx, 50052, l)
+		errCh <- grpc.RunServer(ctx, cfg, l)
 	}()
 
 	select {
