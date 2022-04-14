@@ -13,7 +13,7 @@ import (
 )
 
 var port = flag.Int("p", 4000, "gRPC server network port")
-var userAddr = flag.String("userAddr", "localhost:50000", "DB service address")
+var userAddr = flag.String("userAddr", "localhost:50000", "User service address")
 
 func main() {
 	os.Exit(run(context.Background()))
