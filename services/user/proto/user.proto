@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "github.com/moromin/PFC-balancer/services/user/proto";
+
+service UserService {
+    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+    rpc FindUserByEmail(FindUserByEmailRequest) returns (FindUserByEmailResponse);
+    rpc FindUserById(FindUserByIdRequest) returns (FindUserByIdResponse);
+}
+
+message CreateUserRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message CreateUserResponse {
+    User user = 1;
+}
+
+message FindUserByEmailRequest {
+    string email = 1;
+}
+
+message FindUserByEmailResponse {
+    User user = 1;
+    string password = 2;
+}
+
+message FindUserByIdRequest {
+    int64 id = 1;
+}
+
+message FindUserByIdResponse {
+    User user = 1;
+}
+
+message User {
+    int64 id = 1;
+    string email = 2;
+}

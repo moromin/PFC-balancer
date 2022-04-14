@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  db:
+  postgres:
     image: postgres:14
     environment:
       POSTGRES_USER: moromin
@@ -10,25 +10,83 @@ services:
     ports:
       - 5432:5432
     volumes:
-      # TODO: confirm details
-      - db_volume:/var/lib/postgres:cached
-      # - ./platform/db/conf.d:/etc/postgres/conf.d
+      - ./platform/db/postgres/csvs:/var/lib/postgresql/csvs
+      - ./platform/db/postgres/01_init_schema.sql:/docker-entrypoint-initdb.d/01_init_schema.sql
+      - ./platform/db/postgres/02_load_foods.sql:/docker-entrypoint-initdb.d/02_load_foods.sql
 
-  migrate:
-    build: ./platform/db
-    depends_on:
-      - db
-    command: [ "up" ]
+  db:
+    image: docker.io/moromin/pfc-balancer/db
     environment:
-      WAIT_HOSTS: db:5432
-      MIGRATIONS_DIR: ./migrations
       POSTGRES_USER: moromin
       POSTGRES_PASSWORD: password
-      POSTGRES_HOST: db
+      POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: pfc-balancer
-    volumes:
-      - ./platform/db/migrations:/migrations
+    ports:
+      - 50050:4000
+    command:
+      - "-p"
+      - "4000"
+
+  user:
+    image: docker.io/moromin/pfc-balancer/user
+    ports:
+      - 50052:4000
+    command:
+      - "-p"
+      - "4000"
+      - "-dbAddr"
+      - "db:4000"
+
+  auth:
+    image: docker.io/moromin/pfc-balancer/auth
+    ports:
+      - 50051:4000
+    command:
+      - "-p"
+      - "4000"
+      - "-userAddr"
+      - "user:4000"
+
+  food:
+    image: docker.io/moromin/pfc-balancer/food
+    ports:
+      - 50054:4000
+    command:
+      - "-p"
+      - "4000"
+      - "-dbAddr"
+      - "db:4000"
+
+  recipe:
+    image: docker.io/moromin/pfc-balancer/recipe
+    ports:
+      - 50053:4000
+    command:
+      - "-p"
+      - "4000"
+      - "-dbAddr"
+      - "db:4000"
+      - "-authAddr"
+      - "auth:4000"
+      - "-userAddr"
+      - "user:4000"
+      - "-foodAddr"
+      - "food:4000"
+
+  gateway:
+    image: docker.io/moromin/pfc-balancer/gateway
+    ports:
+      - 4000:4000
+    command:
+      - "-p"
+      - "4000"
+      - "-authAddr"
+      - "auth:4000"
+      - "-recipeAddr"
+      - "recipe:4000"
+      - "-foodAddr"
+      - "food:4000"
 
 volumes:
   db_volume:

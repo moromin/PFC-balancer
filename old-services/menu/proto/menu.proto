@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+package menu;
+
+option go_package = "github.com/moromin/PFC-balancer/services/menu/proto";
+
+import "google/api/annotations.proto";
+import "services/recipe/proto/recipe.proto";
+
+service MenuService {
+    // food
+    rpc FindFoodById(FindFoodByIdRequest) returns (FindFoodByIdResponse) {
+        option (google.api.http) = {
+            get: "/menu/foods/{id}"
+        };
+    }
+    rpc ListFoods(ListFoodsRequest) returns (ListFoodsResponse) {
+        option (google.api.http) = {
+            get: "/menu/foods"
+        };
+    }
+    rpc SearchFoods(SearchFoodsRequest) returns (SearchFoodsResponse) {
+        option (google.api.http) = {
+            get: "/menu/foods/search/{name}"
+        };
+    }
+
+    // recipe
+    rpc CreateRecipe(CreateRecipeRequest) returns (CreateRecipeResponse) {
+        option (google.api.http) = {
+            post: "/menu/recipes"
+            body: "*"
+        };
+    }
+    rpc FindRecipeById(FindRecipeByIdRequest) returns (FindRecipeByIdResponse)
+    {
+        option (google.api.http) = {
+            get: "/menu/recipes/{id}"
+        };
+    }
+    rpc ListRecipes(ListRecipesRequest) returns (ListRecipesResponse){
+        option (google.api.http) = {
+            get: "/menu/recipes"
+        };
+    }
+}
+
+// food
+message Food {
+    int64 id = 1;
+    string name = 2;
+    double protein = 3;
+    double fat = 4;
+    double carbohydrate = 5;
+    int64 category = 6;
+}
+
+message FindFoodByIdRequest {
+    int64 id = 1;
+}
+
+message FindFoodByIdResponse {
+    Food food = 1;
+}
+
+message ListFoodsRequest {}
+
+message ListFoodsResponse {
+    repeated Food food_list = 1;
+}
+
+message SearchFoodsRequest {
+    string name = 1;
+}
+
+message SearchFoodsResponse {
+    repeated Food food_list = 1;
+}
+
+// recipe
+message CreateRecipeRequest {
+    string name = 1;
+    repeated recipe.FoodAmount food_amounts = 2;
+    repeated string procedures = 3;
+    int64 user_id = 4;
+}
+
+message CreateRecipeResponse {
+    int64 id = 1;
+}
+
+message FindRecipeByIdRequest {
+    int64 id = 1;
+}
+
+message FindRecipeByIdResponse {
+    recipe.Recipe recipe = 1;
+}
+
+message ListRecipesRequest {}
+
+message ListRecipesResponse {
+    repeated recipe.Recipe recipes = 1;
+}

@@ -1,16 +1,53 @@
-MIGRATION_PATH	= db/migration
-FOOD_DB_PATH = db/food
+MAKE_PATH = .
 
-migrateup:
-	migrate -path $(MIGRATION_PATH) -database "postgresql://postgres:password@localhost:5432/balance-app?sslmode=disable" -verbose up
+PROTOC_GRPC = protoc -I . \
+			--go_out ./${MAKE_PATH} \
+    		--go-grpc_out ./${MAKE_PATH} \
+			--go-grpc_opt=paths=source_relative,\
+			--go-grpc_opt=require_unimplemented_servers=false,\
+			./${MAKE_PATH}/proto/*.proto
 
-migratedown:
-	migrate -path $(MIGRATION_PATH) -database "postgresql://postgres:password@localhost:5432/balance-app?sslmode=disable" -verbose down
+PROTOC_GATEWAY = protoc -I . \
+				--grpc-gateway_out ./${MAKE_PATH} \
+				--grpc-gateway_opt logtostderr=true \
+				--grpc-gateway_opt paths=source_relative \
+				--grpc-gateway_opt generate_unbound_methods=true \
+				./${MAKE_PATH}/proto/*.proto
 
-sqlc:
-	sqlc generate
+# TODO: run all services rule
+all:
+	make db
+	make user
+	make auth
+	make food
+	make recipe
+	make gateway
+	docker compose up
 
-food-db:
-	go1.18 run db/food/main.go
+gen-protoc:
+# cd ${MAKE_PATH} && $(PROTOC_GRPC)
+	$(PROTOC_GRPC)
 
-.PHONY: migrateup migratedown sqlc
+gen-gateway:
+	$(PROTOC_GATEWAY)
+
+db:
+	docker build -t moromin/pfc-balancer/db:latest --file platform/db/Dockerfile .
+
+user:
+	docker build -t moromin/pfc-balancer/user:latest --file services/user/Dockerfile .
+
+gateway:
+	docker build -t moromin/pfc-balancer/gateway:latest --file services/gateway/Dockerfile .
+
+auth:
+	docker build -t moromin/pfc-balancer/auth:latest --file services/auth/Dockerfile .
+
+food:
+	docker build -t moromin/pfc-balancer/food:latest --file services/food/Dockerfile .
+
+recipe:
+	docker build -t moromin/pfc-balancer/recipe:latest --file services/recipe/Dockerfile .
+
+
+.PHONY: gen-gateway gen-protoc
