@@ -20,8 +20,6 @@ func main() {
 }
 
 func run(ctx context.Context) int {
-	flag.Parse()
-
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, os.Kill)
 	defer stop()
 
@@ -34,6 +32,7 @@ func run(ctx context.Context) int {
 		return 1
 	}
 
+	flag.Parse()
 	cfg := &grpc.ServerConfig{
 		Port:     *port,
 		UserAddr: *userAddr,
