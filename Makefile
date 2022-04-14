@@ -20,6 +20,7 @@ all:
 	make user
 	make auth
 	make food
+	make recipe
 	docker compose up
 
 gen-protoc:
@@ -41,10 +42,11 @@ gateway:
 auth:
 	docker build -t moromin/pfc-balancer/auth:latest --file services/auth/Dockerfile .
 
-menu:
-	cd services/menu && go run main.go
-
 food:
 	docker build -t moromin/pfc-balancer/food:latest --file services/food/Dockerfile .
+
+recipe:
+	docker build -t moromin/pfc-balancer/recipe:latest --file services/recipe/Dockerfile .
+
 
 .PHONY: gen-gateway gen-protoc

@@ -58,6 +58,22 @@ services:
       - "-dbAddr"
       - "db:4000"
 
+  recipe:
+    image: docker.io/moromin/pfc-balancer/recipe
+    ports:
+      - 50053:4000
+    command:
+      - "-p"
+      - "4000"
+      - "-dbAddr"
+      - "db:4000"
+      - "-authAddr"
+      - "auth:4000"
+      - "-userAddr"
+      - "user:4000"
+      - "-foodAddr"
+      - "food:4000"
+
 volumes:
   db_volume:
     driver: local

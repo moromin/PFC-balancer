@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -10,6 +11,12 @@ import (
 	"github.com/moromin/PFC-balancer/pkg/logger"
 	"github.com/moromin/PFC-balancer/services/recipe/grpc"
 )
+
+var port = flag.Int("p", 4000, "gRPC server network port")
+var dbAddr = flag.String("dbAddr", "localhost:50000", "DB service address")
+var authAddr = flag.String("authAddr", "localhost:50051", "Auth service address")
+var userAddr = flag.String("userAddr", "localhost:50052", "User service address")
+var foodAddr = flag.String("foodAddr", "localhost:50054", "Food service address")
 
 func main() {
 	os.Exit(run(context.Background()))
@@ -28,9 +35,18 @@ func run(ctx context.Context) int {
 		return 1
 	}
 
+	flag.Parse()
+	cfg := &grpc.ServerConfig{
+		Port:     *port,
+		DBAddr:   *dbAddr,
+		AuthAddr: *authAddr,
+		UserAddr: *userAddr,
+		FoodAddr: *foodAddr,
+	}
+
 	errCh := make(chan error, 1)
 	go func() {
-		errCh <- grpc.RunServer(ctx, 50054, l)
+		errCh <- grpc.RunServer(ctx, cfg, l)
 	}()
 
 	select {

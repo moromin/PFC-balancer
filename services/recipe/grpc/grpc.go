@@ -14,31 +14,39 @@ import (
 	"google.golang.org/grpc"
 )
 
-func RunServer(ctx context.Context, port int, l *zap.Logger) error {
+type ServerConfig struct {
+	Port     int
+	DBAddr   string
+	AuthAddr string
+	UserAddr string
+	FoodAddr string
+}
+
+func RunServer(ctx context.Context, cfg *ServerConfig, l *zap.Logger) error {
 	opts := []grpc.DialOption{
 		grpc.WithInsecure(),
 		grpc.WithBlock(),
 	}
 
-	dbConn, err := grpc.DialContext(ctx, "localhost:5000", opts...)
+	dbConn, err := grpc.DialContext(ctx, cfg.DBAddr, opts...)
 	if err != nil {
 		return err
 	}
 	dbClient := db.NewDBServiceClient(dbConn)
 
-	authConn, err := grpc.DialContext(ctx, "localhost:50051", opts...)
+	authConn, err := grpc.DialContext(ctx, cfg.AuthAddr, opts...)
 	if err != nil {
 		return err
 	}
 	authClient := auth.NewAuthServiceClient(authConn)
 
-	userConn, err := grpc.DialContext(ctx, "localhost:50052", opts...)
+	userConn, err := grpc.DialContext(ctx, cfg.UserAddr, opts...)
 	if err != nil {
 		return err
 	}
 	userClient := user.NewUserServiceClient(userConn)
 
-	foodConn, err := grpc.DialContext(ctx, "localhost:50055", opts...)
+	foodConn, err := grpc.DialContext(ctx, cfg.FoodAddr, opts...)
 	if err != nil {
 		return err
 	}
@@ -51,7 +59,7 @@ func RunServer(ctx context.Context, port int, l *zap.Logger) error {
 		authClient: authClient,
 	}
 
-	return pkggrpc.NewServer(port, func(s *grpc.Server) {
+	return pkggrpc.NewServer(cfg.Port, func(s *grpc.Server) {
 		proto.RegisterRecipeServiceServer(s, svc)
 	}, grpc_auth.UnaryServerInterceptor(svc.Authenticate)).Start(ctx)
 }
