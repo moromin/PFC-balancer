@@ -14,7 +14,14 @@ import (
 	"google.golang.org/grpc"
 )
 
-func RunServer(ctx context.Context, port int, l *zap.Logger) error {
+type ServerConfig struct {
+	Port       int
+	AuthAddr   string
+	RecipeAddr string
+	FoodAddr   string
+}
+
+func RunServer(ctx context.Context, cfg *ServerConfig, l *zap.Logger) error {
 	mux := runtime.NewServeMux()
 
 	opts := []grpc.DialOption{
@@ -23,11 +30,11 @@ func RunServer(ctx context.Context, port int, l *zap.Logger) error {
 	}
 
 	server := &http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
+		Addr:    fmt.Sprintf(":%d", cfg.Port),
 		Handler: mux,
 	}
 
-	authConn, err := grpc.DialContext(ctx, "localhost:50051", opts...)
+	authConn, err := grpc.DialContext(ctx, cfg.AuthAddr, opts...)
 	if err != nil {
 		return fmt.Errorf("failed to dial to auth server: %w", err)
 	}
@@ -35,7 +42,7 @@ func RunServer(ctx context.Context, port int, l *zap.Logger) error {
 		return fmt.Errorf("failed to regiter auth client: %w", err)
 	}
 
-	foodConn, err := grpc.DialContext(ctx, "localhost:50055", opts...)
+	foodConn, err := grpc.DialContext(ctx, cfg.FoodAddr, opts...)
 	if err != nil {
 		return fmt.Errorf("failed to dial to food server: %w", err)
 	}
@@ -43,7 +50,7 @@ func RunServer(ctx context.Context, port int, l *zap.Logger) error {
 		return fmt.Errorf("failed to regiter food client: %w", err)
 	}
 
-	recipeConn, err := grpc.DialContext(ctx, "localhost:50054", opts...)
+	recipeConn, err := grpc.DialContext(ctx, cfg.RecipeAddr, opts...)
 	if err != nil {
 		return fmt.Errorf("failed to dial to recipe server: %w", err)
 	}

@@ -74,6 +74,20 @@ services:
       - "-foodAddr"
       - "food:4000"
 
+  gateway:
+    image: docker.io/moromin/pfc-balancer/gateway
+    ports:
+      - 4000:4000
+    command:
+      - "-p"
+      - "4000"
+      - "-authAddr"
+      - "auth:4000"
+      - "-recipeAddr"
+      - "recipe:4000"
+      - "-foodAddr"
+      - "food:4000"
+
 volumes:
   db_volume:
     driver: local
