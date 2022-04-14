@@ -1,5 +1,4 @@
-# FROM golang:1.18.0-bullseye AS builder
-FROM golang:1.18.0-bullseye
+FROM golang:1.18.0-bullseye AS builder
 
 WORKDIR /go/src/github.com/moromin/PFC-balancer
 
@@ -10,4 +9,5 @@ RUN go mod download
 COPY . .
 RUN go build -o /usr/bin/db ./platform/db
 
-CMD ["/usr/bin/db", "-p", "4000"]
+# CMD ["/usr/bin/db", "-p", "4000"]
+ENTRYPOINT ["/usr/bin/db"]
