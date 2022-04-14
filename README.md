@@ -3,6 +3,7 @@ PFC-balancer is a microservice that allows you to create and retrieve informatio
 
 This service was created with reference to [mercari-microservices-example](https://github.com/mercari/mercari-microservices-example).
 
+## Architecture
 ```mermaid
 graph LR;
     A(gateway) --> B(auth)
@@ -63,6 +64,49 @@ Specify the following path followed by `localhost:4000`
 | Create new recipe  | `POST` | `/recipes` | ✔︎ |
 | List all recipes  | `GET` | `/recipes` | × |
 | Find recipe by ID  | `GET` | `/recipes/{id}` | × |
+
+## DB schema
+```mermaid
+erDiagram
+    users ||--o{ recipes: ""
+    recipes ||--o| procedures: ""
+    recipes ||--o| recipe_food: ""
+    foods ||--o{ recipe_food: ""
+
+    users {
+        integer id
+        string email
+        string password
+    }
+
+    recipes {
+        integer id
+        string name
+        integer user_id
+    }
+
+    procedures {
+        integer id
+        string text
+        integer recipe_id
+    }
+
+    recipe_food {
+        integer id
+        integer recipe_id
+        integer food_id
+        float amount
+    }
+
+    foods {
+        integer id
+        string name
+        float protein
+        float fat
+        float carbohydrate
+        integer category
+    }
+```
 
 ## Reference
 - [grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway)
