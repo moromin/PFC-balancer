@@ -36,6 +36,7 @@ func run(ctx context.Context) int {
 	cfg := &grpc.ServerConfig{
 		Port:   *port,
 		DBAddr: *dbAddr,
+		Logger: l,
 	}
 
 	errCh := make(chan error, 1)

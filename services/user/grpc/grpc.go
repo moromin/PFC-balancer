@@ -13,6 +13,7 @@ import (
 type ServerConfig struct {
 	Port   int
 	DBAddr string
+	Logger *zap.Logger
 }
 
 func RunServer(ctx context.Context, cfg *ServerConfig, l *zap.Logger) error {
@@ -32,7 +33,7 @@ func RunServer(ctx context.Context, cfg *ServerConfig, l *zap.Logger) error {
 		dbClient: dbClient,
 	}
 
-	return pkggrpc.NewServer(cfg.Port, func(s *grpc.Server) {
+	return pkggrpc.NewServer(cfg.Port, cfg.Logger, func(s *grpc.Server) {
 		proto.RegisterUserServiceServer(s, svc)
 	}).Start(ctx)
 }

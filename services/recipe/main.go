@@ -42,6 +42,7 @@ func run(ctx context.Context) int {
 		AuthAddr: *authAddr,
 		UserAddr: *userAddr,
 		FoodAddr: *foodAddr,
+		Logger:   l,
 	}
 
 	errCh := make(chan error, 1)

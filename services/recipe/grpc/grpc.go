@@ -20,6 +20,7 @@ type ServerConfig struct {
 	AuthAddr string
 	UserAddr string
 	FoodAddr string
+	Logger   *zap.Logger
 }
 
 func RunServer(ctx context.Context, cfg *ServerConfig, l *zap.Logger) error {
@@ -59,7 +60,7 @@ func RunServer(ctx context.Context, cfg *ServerConfig, l *zap.Logger) error {
 		authClient: authClient,
 	}
 
-	return pkggrpc.NewServer(cfg.Port, func(s *grpc.Server) {
+	return pkggrpc.NewServer(cfg.Port, cfg.Logger, func(s *grpc.Server) {
 		proto.RegisterRecipeServiceServer(s, svc)
 	}, grpc_auth.UnaryServerInterceptor(svc.Authenticate)).Start(ctx)
 }

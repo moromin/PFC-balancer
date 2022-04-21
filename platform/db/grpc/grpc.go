@@ -22,7 +22,7 @@ func RunServer(ctx context.Context, port int, l *zap.Logger) error {
 		db: db,
 	}
 
-	return pkggrpc.NewServer(port, func(s *grpc.Server) {
+	return pkggrpc.NewServer(port, l, func(s *grpc.Server) {
 		proto.RegisterDBServiceServer(s, svc)
 	}).Start(ctx)
 }

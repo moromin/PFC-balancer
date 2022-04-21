@@ -7,24 +7,23 @@ import (
 
 func New() (*zap.Logger, error) {
 	config := zap.Config{
-		Level:       zap.NewAtomicLevelAt(zap.DebugLevel),
-		Development: true,
-		Encoding:    "json",
+		Level:             zap.NewAtomicLevelAt(zap.DebugLevel),
+		Development:       false,
+		Encoding:          "json",
+		DisableCaller:     true,
+		DisableStacktrace: true,
 		EncoderConfig: zapcore.EncoderConfig{
 			TimeKey:        "timestamp",
-			LevelKey:       "serverity",
-			NameKey:        "go.uber.org/zap/logger",
-			CallerKey:      "go.uber.org/zap/caller",
-			FunctionKey:    zapcore.OmitKey,
-			StacktraceKey:  "go.uber.org/zap/stacktrace",
+			LevelKey:       "level",
+			NameKey:        "logger",
+			MessageKey:     "message",
 			LineEnding:     zapcore.DefaultLineEnding,
-			EncodeLevel:    zapcore.CapitalLevelEncoder,
-			EncodeTime:     zapcore.RFC3339NanoTimeEncoder,
+			EncodeLevel:    zapcore.LowercaseLevelEncoder,
+			EncodeTime:     zapcore.EpochMillisTimeEncoder,
 			EncodeDuration: zapcore.SecondsDurationEncoder,
-			EncodeCaller:   zapcore.ShortCallerEncoder,
 		},
-		// OutputPaths:      []string{"stdout"},
-		// ErrorOutputPaths: []string{"stderr"},
+		OutputPaths:      []string{"stdout"},
+		ErrorOutputPaths: []string{"stderr"},
 	}
 
 	l, err := config.Build()
