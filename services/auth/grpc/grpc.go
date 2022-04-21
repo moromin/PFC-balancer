@@ -14,6 +14,7 @@ import (
 type ServerConfig struct {
 	Port     int
 	UserAddr string
+	Logger   *zap.Logger
 }
 
 func RunServer(ctx context.Context, cfg *ServerConfig, l *zap.Logger) error {
@@ -38,7 +39,7 @@ func RunServer(ctx context.Context, cfg *ServerConfig, l *zap.Logger) error {
 		jwt:        jwt,
 	}
 
-	return pkggrpc.NewServer(cfg.Port, func(s *grpc.Server) {
+	return pkggrpc.NewServer(cfg.Port, cfg.Logger, func(s *grpc.Server) {
 		proto.RegisterAuthServiceServer(s, svc)
 	}).Start(ctx)
 }
