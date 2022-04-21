@@ -6,8 +6,8 @@ import (
 	"net"
 
 	middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	logger "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	ctxtags "github.com/moromin/PFC-balancer/pkg/grpc/context"
+	logger "github.com/moromin/PFC-balancer/pkg/grpc/logger"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -18,12 +18,9 @@ type Server struct {
 	port   int
 }
 
-func NewServer(port int, register func(*grpc.Server), iss ...grpc.UnaryServerInterceptor) *Server {
-	zl, _ := zap.NewProduction()
-	logger.ReplaceGrpcLogger(zl)
-
+func NewServer(port int, zl *zap.Logger, register func(*grpc.Server), iss ...grpc.UnaryServerInterceptor) *Server {
 	intersections := []grpc.UnaryServerInterceptor{
-		ctxtags.UnaryServerInterceptor(ctxtags.WithFieldExtractor(ctxtags.CodeGenRequestFieldExtractor)),
+		ctxtags.UnaryServerInterceptor(),
 		logger.UnaryServerInterceptor(zl),
 	}
 	intersections = append(intersections, iss...)
